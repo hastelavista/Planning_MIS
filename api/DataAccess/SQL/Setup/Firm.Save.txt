@@ -1,0 +1,24 @@
+﻿If(@Id=0)
+	Begin
+		Insert Into Firm(FirmTypeId, Name, Address, PanNo, PhoneNo, Bank, Branch, AccountNo, Representative, RepresentativeDesignation, RepresentativeAddress, MobileNo, CreatedDate, CreatedBy, IsDeleted)
+			values(@FirmTypeId, @Name, @Address, @PanNo, @PhoneNo, @Bank, @Branch, @AccountNo, @Representative, @RepresentativeDesignation, @RepresentativeAddress, @MobileNo, GETDATE(), @CurrentUser, 0)
+	End
+Else
+	Begin
+		Update Firm set 
+			FirmTypeId = @FirmTypeId,
+			Name = @Name,
+			Address = @Address,
+			PanNo = @PanNo,
+			PhoneNo = @PhoneNo,
+			Bank = @Bank,
+			Branch = @Branch,
+			AccountNo = @AccountNo,
+			Representative = @Representative,
+			RepresentativeDesignation = @RepresentativeDesignation,
+			RepresentativeAddress = @RepresentativeAddress,
+			MobileNo = @MobileNo,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		where Id = @Id
+	End

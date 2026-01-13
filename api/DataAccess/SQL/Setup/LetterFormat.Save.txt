@@ -1,0 +1,17 @@
+﻿If @Id > 0
+Begin
+	Update LetterFormat Set
+		LetterType = @LetterType,
+		Name = @Name,
+		Subject = @Subject,
+		Body = @LetterBody,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser,
+		ImplementationModelId = @ImplementationModelId
+			Where Id = @Id
+End
+Else
+Begin
+	Insert into LetterFormat(LetterType, [Name], Subject, Body, ImplementationModelId, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@LetterType, @Name, @Subject, @LetterBody, @ImplementationModelId, GETDATE(), @CurrentUser, Null, Null, 0)
+End

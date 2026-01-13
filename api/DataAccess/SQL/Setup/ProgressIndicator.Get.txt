@@ -1,0 +1,9 @@
+﻿Select 
+		PI.*,
+		U.Name as Unit
+	from ProgressIndicator PI
+		Left join Unit U on U.Id = PI.UnitId
+			where (@Id = 0 or PI.Id = @Id) And
+				(@Name = '' or PI.Name like '%' + @Name + '%') And
+				(@Code = '' or PI.Code = @Code) And
+				PI.IsDeleted = 0

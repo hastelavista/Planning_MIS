@@ -1,0 +1,12 @@
+﻿Select 
+		CL.*,
+		C.Name as CommitteeName,
+		c.RegistrationNo,
+		W.Name + N' नं. वडा कार्यालय' as LetterHeadOffice
+	from CommitteeLetter CL
+	inner join Committee C on C.Id = CL.CommitteeId
+	inner join Ward W on C.WardId = W.Id
+	Where	(@Id = 0 or CL.Id = @Id) and
+			(@CommitteeId = 0 or CL.CommitteeId = @CommitteeId) and
+			(@LetterTypeId = 0 or CL.LetterTypeId = @LetterTypeId) and
+			CL.IsDeleted = 0 

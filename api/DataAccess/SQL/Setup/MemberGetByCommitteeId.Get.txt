@@ -1,0 +1,15 @@
+﻿Select 
+		M.*,
+		CM.DesignationId as DesignationId,
+		D.Name as Designation,
+		CM.CommitteeId,
+		D.DisplayOrder
+	from Member M
+		inner join CommitteeMember CM on M.Id = CM.MemberId  and CM.IsDeleted = 0
+		inner join Designation D on D.Id = CM.DesignationId
+			where	(@CommitteeId = 0 or CM.CommitteeId = @CommitteeId) And
+					(@Name = '' or M.Name like '%' + @Name + '%') And
+					(@CitizenshipNo = '' or M.CitizenshipNo = @CitizenshipNo) And
+					(@MobileNo = '' or M.MobileNo = @MobileNo) And 
+					M.IsDeleted = 0
+			order by D.DisplayOrder

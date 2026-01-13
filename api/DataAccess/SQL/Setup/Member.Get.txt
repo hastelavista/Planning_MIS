@@ -1,0 +1,17 @@
+﻿Select 
+		M.*, 
+		IsNull(CM.DesignationId, 0) as DesignationId,
+		IsNull(D.Name, '') AS Designation,
+		IsNull(C.Id, 0) as CommitteeId,
+		IsNull(C.Name, '') as Committee
+	from Member as M
+		Left Join CommitteeMember CM on M.Id = CM.MemberId and CM.IsDeleted = 0
+		Left join Designation AS D on CM.DesignationId = D.Id
+		Left Join Committee C on CM.CommitteeId = C.Id
+	where	(@Id = 0 or M.Id = @Id) and
+			(@Name = '' or M.Name Like '%' + @Name + '%') and
+			(@DesignationId = 0 or CM.DesignationId = @DesignationId) and
+			(@CitizenShipNo = '' or M.CitizenshipNo = @CitizenshipNo) and
+			(@MobileNo = '' or M.MobileNo = @MobileNo) and
+			(@CommitteeId = 0 or CM.CommitteeId = @CommitteeId) and
+			M.IsDeleted = 0

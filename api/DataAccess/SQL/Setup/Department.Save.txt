@@ -1,0 +1,20 @@
+﻿If @Id > 0
+Begin
+	Update Department Set
+		Name = @Name,
+		Alias = @Alias,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	where Id = @Id
+
+	SELECT @Id AS Id;
+
+End
+
+Else
+Begin
+	Insert into Department(Name, Alias, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@Name, @Alias, GETDATE(), @CurrentUser, Null, Null, 0)
+
+		SELECT SCOPE_IDENTITY() AS Id;
+End

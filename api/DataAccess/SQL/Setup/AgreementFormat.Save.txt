@@ -1,0 +1,19 @@
+﻿
+IF EXISTS (SELECT TOP 1* FROM AgreementFormat WHERE ImplementationModelId = @ImplementationModelId AND (@Id = 0 OR @Id != Id) AND IsDeleted = 0)
+	THROW 51000, N'कार्यान्वयन विधि पहिले नै अवस्थित छ!', 1;
+
+If @Id > 0
+	Begin
+		Update AgreementFormat Set
+			ImplementationModelId = @ImplementationModelId,
+			Name = @Name,
+			Body = @Body,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into AgreementFormat(ImplementationModelId, Name, Body, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@ImplementationModelId, @Name, @Body, GETDATE(), @CurrentUser, Null, Null, 0)
+	End

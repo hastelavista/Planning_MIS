@@ -1,0 +1,18 @@
+﻿If @Id > 0
+Begin
+	Update Item Set 
+		Name = @Name,
+		ItemTypeId = @ItemTypeId,
+		Code = @Code,
+		UnitId = @UnitId,
+		Remarks = @Remarks,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+	Begin
+		Insert into Item(Name, ItemTypeId, Code, UnitId, Remarks, CreatedBy)
+		Values(@Name, @ItemTypeId, @Code, @UnitId, @Remarks, @CurrentUser)
+	End

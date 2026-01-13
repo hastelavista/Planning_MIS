@@ -1,0 +1,16 @@
+﻿If @Id > 0
+	Begin
+		Update SubSector Set
+			SectorId = @SectorId,
+			Name = @Name,
+			Code = @Code,
+			IsUsable = @IsUsable,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into SubSector(SectorId, Name, Code, IsUsable, CreatedDate, CreatedBy, IsDeleted)
+		Values(@SectorId, @Name, @Code, @IsUsable, GETDATE(), @CurrentUser, 0)
+	End

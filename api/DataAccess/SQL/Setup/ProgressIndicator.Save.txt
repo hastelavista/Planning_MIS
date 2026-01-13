@@ -1,0 +1,19 @@
+﻿If @Id > 0
+	Begin
+		Update ProgressIndicator Set
+			Name = @Name,
+			Code = @Code,
+			UnitId = @UnitId,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into ProgressIndicator(Name, Code, UnitId, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Code, @UnitId, GETDATE(), @CurrentUser, 0)
+
+		SET @Id = SCOPE_IDENTITY()
+	End
+
+Select @Id as Id

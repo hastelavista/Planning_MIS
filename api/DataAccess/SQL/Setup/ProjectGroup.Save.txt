@@ -1,0 +1,18 @@
+﻿If(@Id=0)
+	Begin
+		Insert Into ProjectGroup(ParentId, Name, Code, SectorId, CreatedDate, CreatedBy, IsDeleted) 
+		values(@ParentId, @Name, @Code, @SectorId, GETDATE(), @CurrentUser, 0)
+	End
+Else
+	Begin
+		Update ProjectGroup set 
+			ParentId = @ParentId,
+			Name = @Name,
+			Code = @Code,
+			SectorId = @SectorId,
+			ModifiedBy = @CurrentUser,
+			ModifiedDate = GETDATE()
+		where Id = @Id
+	End
+
+

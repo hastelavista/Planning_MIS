@@ -1,0 +1,14 @@
+﻿If(@Id=0)
+	Begin
+		Insert Into Beneficiary(Name, IsForPopulation, CreatedDate, CreatedBy, IsDeleted)
+		values(@Name, @IsForPopulation, GETDATE(), @CurrentUser, 0)
+	End
+Else
+	Begin
+		Update Beneficiary set 
+			Name = @Name,
+			IsForPopulation = @IsForPopulation,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End

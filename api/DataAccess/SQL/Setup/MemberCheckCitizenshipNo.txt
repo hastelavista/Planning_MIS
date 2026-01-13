@@ -1,0 +1,9 @@
+﻿Select 
+		M.*, C.Name as Committee
+	from Member M
+		Inner join CommitteeMember CM on M.Id = CM.MemberId and CM.Status = 'Active'
+		Inner join Committee as C on CM.CommitteeId = C.Id and C.IsDeleted = 0 and C.Id <> @CommitteeId
+		Inner Join ProjectModelProject as pmp on C.Id = pmp.CommitteeId and pmp.IsDeleted = 0
+		inner join Project as p on p.Id = pmp.ProjectId and p.IsDeleted = 0 and p.CompletedMiti is null and p.FiscalYearId = @FyId
+		Where	M.CitizenshipNo = @CitizenShipNo and M.IsActive = 1
+			and M.IsDeleted = 0

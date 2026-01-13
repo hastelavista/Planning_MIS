@@ -1,0 +1,6 @@
+﻿Select Convert(int, Value) as ProjectId into #Project
+	from dbo.fn_SplitString(@ProjectId, ',')
+
+Update Project Set
+	RunningFiscalYearId = @TargetFyId
+Where Id in (Select ProjectId from #Project)

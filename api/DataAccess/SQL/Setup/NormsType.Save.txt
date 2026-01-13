@@ -1,0 +1,16 @@
+﻿If @Id > 0
+Begin
+	Update NormsType Set 
+		Name = @Name,
+		AuthorityName = @AuthorityName,
+		Year = @Year,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+	Begin
+		Insert into NormsType(Name, AuthorityName, Year, CreatedBy)
+		Values(@Name, @AuthorityName, @Year, @CurrentUser)
+	End

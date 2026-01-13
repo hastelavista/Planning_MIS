@@ -1,0 +1,2 @@
+﻿Select * from ActivityRate 
+	where ActivityId = @ActivityId and FiscalYearId = @FiscalYearId and IsDeleted = 0

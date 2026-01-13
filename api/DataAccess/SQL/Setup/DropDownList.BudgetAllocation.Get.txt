@@ -1,0 +1,6 @@
+﻿SELECT ba1.* ,
+		ba2.[Name] as ParentName
+		FROM budgetallocation AS ba1
+			LEFT JOIN BudgetAllocation AS ba2 ON ba1.ParentId = ba2.Id
+		WHERE ba1.IsDeleted = 0
+			ORDER BY ParentName

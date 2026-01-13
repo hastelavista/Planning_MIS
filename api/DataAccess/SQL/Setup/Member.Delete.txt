@@ -1,0 +1,12 @@
+﻿Update Member Set 
+	IsDeleted = 1, 
+	ModifiedDate = GETDATE(), 
+	ModifiedBy = @CurrentUser
+where Id = @Id
+
+Update CommitteeMember Set
+	IsDeleted = 1,
+	Status = 'Released',
+	ModifiedDate = GETDATE(),
+	ModifiedBy = @CurrentUser
+where MemberId = @Id

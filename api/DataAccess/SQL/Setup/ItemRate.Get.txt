@@ -1,0 +1,11 @@
+﻿Select
+		IR.Id,
+		I.Id as ItemId,
+		I.Name as Item,
+		FY.Id as FiscalYearId,
+		FY.Name as FiscalYear,
+		IR.Rate
+	from Item I
+		left join ItemRate IR on IR.ItemId = I.Id and IR.FiscalYearId = @FiscalYearId
+		left join FiscalYear FY on FY.Id = IR.FiscalYearId and FY.Id = @FiscalYearId
+			WHERE (@Name = '' or I.Name like '%' + @Name + '%') AND I.IsDeleted = 0

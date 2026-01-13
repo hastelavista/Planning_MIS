@@ -1,0 +1,23 @@
+﻿If @Id > 0
+	Begin
+		Update FiscalYear Set
+			Name = @Name,
+			Name_En = @Name_En,
+			Code = @Code,
+			StartYear = @StartYear,
+			EndYear = @EndYear,
+			DisplayPosition = @DisplayPosition,
+			DateFrom = @DateFrom,
+			Dateto = @DateTo,
+			DateFromEng = @DateFromEng,
+			DateToEng = @DateToEng,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @UserId
+				Where Id = @Id
+	End
+Else
+	Begin
+		Insert Into FiscalYear(Name, Name_En, Code, StartYear, EndYear, DisplayPosition, DateFrom, DateTo, DateFromEng, DateToEng, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@Name, @Name_En, @Code, @StartYear, @EndYear, @DisplayPosition, @DateFrom, @DateTo, @DateFromEng, @DateToEng, GETDATE(), @UserId, Null, Null, 0)
+	End
+	

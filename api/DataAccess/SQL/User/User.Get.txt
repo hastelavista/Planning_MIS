@@ -1,0 +1,23 @@
+﻿Select 
+		U.Id,
+		U.FullName,
+		U.UserName,
+		U.Password,
+		U.Salt,
+		U.IsActive,
+		IsNull(U.IsDepartmentUser, 0) as IsDepartmentUser,
+		UserTypeId,
+		U.WardId,
+		ut.Name as UserTypeName,
+		U.EmployeeId,
+		IsNull(e.DepartmentId, 0) as DepartmentId,
+		U.IsStatic
+	from [User] U
+	inner join UserType ut on ut.Id = u.UserTypeId
+	left join dbo.Employee as e on U.EmployeeId = e.Id
+	Where	(@Id = 0 or U.Id = @Id) And
+			(@UserName = '' or U.UserName = @UserName) And
+			(@FullName = '' or U.FullName Like '%' + @FullName + '%') And
+			U.IsDeleted = 0
+
+--Select UserId, PermissionId from UserPermission Where UserId = @Id

@@ -1,0 +1,22 @@
+﻿Select
+		N.Id,
+		N.ActivityId,
+		A.Name as Activity,
+		AG.Id as ActivityGroupId,
+		AG.Name as ActivityGroup,
+		N.ItemId,
+		I.Name as Item,
+		IT.Id as ItemTypeId,
+		IT.Name as ItemType,
+		U.Name as Unit,
+		N.Qty,
+		IR.Rate
+	from Norms N
+		inner join Activity A on A.Id = N.ActivityId
+		inner join ActivityGroup AG on AG.Id = A.ActivityGroupId
+		inner join Item I on I.Id = N.ItemId
+		inner join ItemType IT on IT.Id = I.ItemTypeId
+		inner join Unit U on U.Id = I.UnitId
+		left join ItemRate IR on IR.ItemId = I.Id and IR.FiscalYearId = @FiscalYearId
+			WHERE N.ActivityId = @ActivityId AND 
+				  (@Name = '' or A.Name like '%' + @Name + '%') AND N.IsDeleted = 0

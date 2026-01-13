@@ -1,0 +1,12 @@
+﻿Select 
+		PR.*,
+		D.Name as Designation,
+		W.Name as Ward
+	from PublicRepresentative PR
+		inner join Designation D on D.Id = PR.DesignationId
+		inner join Ward W on W.Id = PR.WardId
+			where	(@Id = 0 or PR.Id = @Id) And
+					(@Name = '' or PR.Name like '%' + @Name + '%') And
+					(@DesignationId = 0 or PR.DesignationId = @DesignationId) And
+					(@WardId = 0 or PR.WardId = @WardId) And
+					PR.IsDeleted = 0

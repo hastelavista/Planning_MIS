@@ -1,0 +1,15 @@
+﻿Select 
+		E.*,
+		Dept.Name as Department,
+		Deg.Name as Designation
+	from Employee E
+		inner join Department as Dept on Dept.Id = E.DepartmentId
+		inner join Designation as Deg on Deg.Id = E.DesignationId
+	Where	(@Id = 0 or E.Id = @Id) and
+			(@Name = '' or E.Name like '%' + @Name + '%') and
+			(@MobileNo = '' or E.MobileNo like '%' + @MobileNo + '%') and
+			(@DepartmentId = 0 or E.DepartmentId = @DepartmentId) and
+			(@DesignationId = 0 or E.DesignationId = @DesignationId) and
+			(@ForIncentive = 0 or (Deg.Id in (Select distinct DesignationId from dbo.VisitIncentiveRate where IsDeleted = 0))) and
+			E.IsDeleted = 0
+			Order By Deg.DisplayOrder

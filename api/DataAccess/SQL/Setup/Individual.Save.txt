@@ -1,0 +1,18 @@
+﻿If @Id > 0
+	Begin
+		Update Individual Set
+			Name = @Name,
+			Address = @Address,
+			MobileNo = @MobileNo,
+			BankId = @BankId,
+			AccountNo = @AccountNo,
+			IsEmployee = @IsEmployee,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into Individual(Name, Address, MobileNo, BankId, AccountNo, IsEmployee, CreatedBy)
+			Values(@Name, @Address, @MobileNo, @BankId, @AccountNo, @IsEmployee, @CurrentUser)
+	End

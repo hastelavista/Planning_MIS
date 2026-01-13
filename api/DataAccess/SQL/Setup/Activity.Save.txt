@@ -1,0 +1,19 @@
+﻿If @Id > 0
+	Begin
+		Update Activity Set
+			ActivityGroupId = @ActivityGroupId,
+			Name = @Name,
+			Code = @Code,
+			ReferenceCode = @ReferenceCode,
+			UnitId = @UnitId,
+			QtyFor = @QtyFor,
+			IsUsable = @IsUsable,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into Activity(ActivityGroupId, Name, Code, ReferenceCode, UnitId, QtyFor, IsUsable, CreatedDate, CreatedBy, IsDeleted)
+		Values(@ActivityGroupId, @Name, @Code, @ReferenceCode, @UnitId, @QtyFor, @IsUsable, GETDATE(), @CurrentUser, 0)
+	End

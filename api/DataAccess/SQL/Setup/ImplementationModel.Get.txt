@@ -1,0 +1,31 @@
+﻿--Select 
+--		IM.Id,
+--		PM.Name as ProjectModel
+--	from ImplementationModel IM
+--		inner join ProjectModel PM on PM.Id = IM.ProjectModelId
+--			where	(@Id = 0 or IM.Id = @Id) And
+--					(@ProjectModelId = 0 or IM.ProjectModelId = @ProjectModelId) And
+--					(@Name = '' or IM.Name like '%' + @Name + '%') And
+--					IM.IsDeleted = 0
+
+
+SELECT 
+		im.Id,
+		im.[Name],
+		im.Code,
+		im.ProjectModelId,
+		pm.[Name] AS ProjectModel,
+		pm.AddBidInformation,
+		pm.AddContractInformation,
+		COUNT(pmp.id) AS TotalProject, COUNT(pp.Id) AS OnGoingProject, COUNT(pc.Id) AS CompletedProject
+	FROM ImplementationModel im
+		INNER JOIN ProjectModel pm ON pm.Id = im.ProjectModelId
+		LEFT JOIN ProjectModelProject AS pmp ON im.Id = pmp.ImplementationModelId AND pmp.IsDeleted = 0
+		LEFT JOIN Project AS pp ON pmp.ProjectId = pp.Id AND pp.IsDeleted = 0 AND pp.CompletedDate IS NULL
+		LEFT JOIN Project AS pc ON pmp.ProjectId = pc.Id AND pc.IsDeleted = 0 AND pc.CompletedDate IS NOT NULL
+			WHERE	(@Id = 0 or im.Id = @Id) AND
+					(@ProjectModelId = 0 OR im.ProjectModelId = @ProjectModelId) AND
+					(@Name = '' or im.[Name] LIKE '%' + @Name + '%') AND
+					im.IsDeleted = 0
+		GROUP BY im.id, im.[Name], im.Code, im.ProjectModelId, pm.[Name], pm.AddBidInformation, pm.AddContractInformation
+	ORDER BY im.id

@@ -1,0 +1,16 @@
+﻿If(@Id=0)
+	Begin
+		Insert Into DonorType(Name,Code,CreatedDate,CreatedBy,IsDeleted)
+		values( @Name, @Code, GETDATE(), @CurrentUser,0);
+	End
+Else
+	Begin
+		Update DonorType set 
+		Name=@Name
+		,Code=@Code
+		,ModifiedDate= GETDATE()
+		,ModifiedBy= @CurrentUser
+		where Id=@Id;
+	End
+
+	

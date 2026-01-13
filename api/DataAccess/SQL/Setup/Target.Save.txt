@@ -1,0 +1,15 @@
+﻿If @Id > 0
+Begin
+	Update Target Set
+		Name = @Name,
+		Code = @Code,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into Target(Name, Code, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@Name, @Code, GETDATE(), @CurrentUser, Null, Null, 0)
+End

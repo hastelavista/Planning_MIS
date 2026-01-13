@@ -1,0 +1,15 @@
+﻿If @Id > 0
+	Begin
+		Update BudgetSubTitle Set
+			Name = @Name,
+			Code = @Code,
+			ExpensesTypeId = @ExpensesTypeId,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into BudgetSubTitle(Name, Code, ExpensesTypeId, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Code, @ExpensesTypeId, GETDATE(), @CurrentUser, 0)
+	End

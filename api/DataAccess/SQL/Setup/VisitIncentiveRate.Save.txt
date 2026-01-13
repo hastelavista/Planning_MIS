@@ -1,0 +1,19 @@
+﻿If @Id > 0
+Begin
+	Update dbo.VisitIncentiveRate Set
+		FiscalYearId = @FiscalYearId,
+		DesignationId = @DesignationId,
+		Rate = @Rate,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+Else
+Begin
+	Insert into dbo.VisitIncentiveRate (FiscalYearId, DesignationId, Rate, CreatedDate, CreatedBy)
+		Values (@FiscalYearId, @DesignationId, @Rate, GETDATE(), @CurrentUser)
+
+	Set @Id = SCOPE_IDENTITY()
+End
+
+Select @Id as Id

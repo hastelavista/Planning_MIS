@@ -1,0 +1,32 @@
+﻿Declare @CountPermissionId int
+
+Select Convert(int, Value) as PermissionId into #Permission
+	from dbo.fn_SplitString(@PermissionId, ',')
+
+Set @CountPermissionId = (Select Count(PermissionId) from #Permission)
+
+If @Id > 0
+Begin
+	Update UserType Set
+		Name = @Name,
+		Description = @Description,
+		IsActive = @IsActive,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into UserType(Name, Description, IsActive, CreatedDate, CreatedBy)
+	Values(@Name, @Description, @IsActive, GETDATE(), @CurrentUser)
+	Set @Id = SCOPE_IDENTITY()
+End
+
+Delete from UserTypePermission Where UserTypeId = @Id
+
+If @CountPermissionId > 0
+Begin
+	Insert into UserTypePermission(UserTypeId, PermissionId)
+	Select @Id, PermissionId from #Permission
+End

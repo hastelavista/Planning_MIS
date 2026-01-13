@@ -1,0 +1,29 @@
+﻿Select 
+		C.*,
+		CT.Name as CommitteeType,
+		B.Name as Bank,
+		B.Branch as Branch,
+		IsNull(CurrentProject.ProjectId, 0) CurrentProjectId,
+		CurrentProject.ProjectName as CurrentProject
+	from Committee C
+		left join dbo.FiscalYear as fy on C.RegisteredMiti Between fy.DateFrom and fy.DateTo
+		left join Bank B on B.Id = C.BankId
+		left join CommitteeType CT on CT.Id = C.CommitteeTypeId
+		outer apply
+		(
+			Select Top 1 P.Id as ProjectId, p.Name as ProjectName
+				from dbo.ProjectModelProject as pmp
+					inner join dbo.Project as p on pmp.ProjectId = p.Id
+					where pmp.IsDeleted = 0
+						and pmp.CommitteeId = C.Id
+						and p.IsDeleted = 0
+						and p.CompletedDate is null
+					order by pmp.Id desc
+		) as CurrentProject
+			Where	(@Id = 0 or C.Id = @Id) and
+					(@Name = '' or C.Name like @Name + '%') and
+					(@RegistrationNo = '' or C.RegistrationNo like '%' + @RegistrationNo + '%') and
+					 (@UserWardList IS NULL  OR LEN(@UserWardList) = 2 OR c.WardId IN (SELECT [Value] FROM OPENJSON(@UserWardList))) AND
+					(@FiscalYearId = 0 or fy.Id = @FiscalYearId) and 
+					C.IsDeleted = 0
+			ORDER BY C.CreatedDate DESC

@@ -1,0 +1,16 @@
+﻿If(@Id = 0)
+Begin
+	Insert Into Checklist (Name, Type, IsForAgreement, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Type, @IsForAgreement, @CreatedDate, @CurrentUser, 0);
+End
+
+Else
+Begin
+	Update Checklist Set 
+		Name = @Name, 
+		Type = @Type, 
+		IsForAgreement = @IsForAgreement,
+		ModifiedDate = @ModifiedDate, 
+		ModifiedBy = @CurrentUser
+	Where Id = @Id;
+End

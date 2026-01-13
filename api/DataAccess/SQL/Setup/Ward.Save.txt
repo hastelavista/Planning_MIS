@@ -1,0 +1,21 @@
+﻿If @Id > 0
+	Begin
+		Update Ward Set
+			Name = @Name,
+			Code = @Code,
+			DisplayOrder = @DisplayOrder,
+			SigningEmp1 = @SigningEmp1,
+			SigningEmp2 = @SigningEmp2,
+			SigningEmp3 = @SigningEmp3,
+			SigningDesignation1 = @SigningDesignation1,
+			SigningDesignation2 = @SigningDesignation2,
+			SigningDesignation3 = @SigningDesignation3,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @UserId
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into Ward(Name, Code, DisplayOrder, SigningEmp1, SigningEmp2, SigningEmp3, SigningDesignation1, SigningDesignation2, SigningDesignation3, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Code, @DisplayOrder, @SigningEmp1, @SigningEmp2, @SigningEmp3, @SigningDesignation1, @SigningDesignation2, @SigningDesignation3, GETDATE(), @UserId, 0)
+	End

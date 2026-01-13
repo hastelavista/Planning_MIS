@@ -1,0 +1,20 @@
+﻿Select * from Committee Where (@CommitteId = 0 or Id = @CommitteId)
+
+Select Pp.Id,
+         Pp.ProjectId,
+		 Pp.CommitteId,
+		 Pp.FirmId,
+		 Pp.ProjectStartDate,
+		 Pp.ProjectStartMiti,
+		 Pp.Experience,
+		 P.Name as ProjectName,
+		 C.Name As CommitteeName,
+	     F.Name as FirmName
+		 From ProjectAgreement As Pp join Project As P on Pp.ProjectId = P.Id
+		 Join Committee As C on Pp.CommitteId = C.Id
+		 join Firm As F on Pp.FirmId=F.Id
+		 Where Pp.ProjectId = @ProjectId and Pp.IsDeleted = 0
+
+
+Select * from ProjectAgreement Where Id = @id and ProjectId = @ProjectId
+

@@ -1,0 +1,12 @@
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\bin\Debug\net9.0\Helper.deps.json
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\bin\Debug\net9.0\Helper.dll
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\bin\Debug\net9.0\Helper.pdb
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.csproj.AssemblyReference.cache
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.AssemblyInfoInputs.cache
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.AssemblyInfo.cs
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.csproj.CoreCompileInputs.cache
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.dll
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\refint\Helper.dll
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\Helper.pdb
+C:\Users\nihar\OneDrive\Desktop\Planning_MIS\Helper\obj\Debug\net9.0\ref\Helper.dll

@@ -1,0 +1,73 @@
+﻿Declare @MemberId int = 0,
+		@OldCommitteeId int = 0
+
+Select @OldCommitteeId = CommitteeId from CommitteeMember Where MemberId = @Id
+
+Set @OldCommitteeId = IsNull(@OldCommitteeId, 0)
+
+Select 
+		cm.DesignationId
+	into #DesignationId
+	from CommitteeMember cm
+	inner join Designation dg on dg.Id = cm.DesignationId
+	where cm.CommitteeId = @CommitteeId and dg.Name in (N'अध्यक्ष', N'उपाध्यक्ष', N'कोषाध्यक्ष', N'सचिव', N'सह-सचिव')
+
+If @Id > 0
+Begin
+	Update Member Set
+		Name = @Name,
+		CitizenshipNo = @CitizenshipNo,
+		Gender = @Gender,
+		GrandFatherName = @GrandFatherName,
+		FatherName = @FatherName,
+		Address = @Address,
+		MobileNo = @MobileNo,
+		IsAccountHolder = @IsAccountHolder,
+		IsInspectionCommittee = @IsInspectionCommittee,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+
+	Set @MemberId = @Id
+End
+
+Else
+	Begin
+		Insert into Member(CitizenshipNo, [Name], Gender, GrandFatherName, FatherName, [Address], MobileNo, IsAccountHolder, IsInspectionCommittee, CreatedDate, CreatedBy, IsDeleted)
+			Values(@CitizenshipNo, @Name, @Gender, @GrandFatherName, @FatherName, @Address, @MobileNo, @IsAccountHolder, @IsInspectionCommittee, GETDATE(), @CurrentUser, 0)
+		
+		Set @MemberId = SCOPE_IDENTITY()
+	End
+
+
+If not exists(Select Top 1 1 from CommitteeMember where CommitteeId = @CommitteeId and DesignationId = @DesignationId and @DesignationId in (Select DesignationId from #DesignationId) and IsDeleted = 0)
+Begin
+	If @CommitteeId > 0 and @Id = 0 
+		Begin 
+			Insert into CommitteeMember(CommitteeId, MemberId, DesignationId, Status, CreatedDate, CreatedBy, IsDeleted)
+				Values(@CommitteeId, @MemberId, @DesignationId, 'Active', GETDATE(), @CurrentUser, 0)
+		End
+	Else 
+		Begin
+			If @CommitteeId <> @OldCommitteeId and @Id > 0
+				Begin
+					Insert into CommitteeMember(CommitteeId, MemberId, DesignationId, Status, CreatedDate, CreatedBy, IsDeleted)
+					Values(@CommitteeId, @Id, @DesignationId, 'Active', GETDATE(), @CurrentUser, 0)
+
+					Update Member Set IsActive = 1 Where Id = @Id
+				End
+			Else
+				Begin
+					Update CommitteeMember Set
+						DesignationId = @DesignationId
+					Where CommitteeId = @CommitteeId and MemberId = @MemberId
+				End
+		End
+End
+
+Select 
+	sum(case when M.Gender = 'F' then 1 else 0 end) * 100.00 / count(*) as FP,
+	sum(case when M.Gender = 'M' then 1 else 0 end) * 100.00 / count(*) as MP
+from Member M
+	inner join CommitteeMember CM on M.Id = CM.MemberId  and CM.IsDeleted = 0
+where CM.CommitteeId = @CommitteeId And M.IsDeleted = 0 FOR JSON PATH;

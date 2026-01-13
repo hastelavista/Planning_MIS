@@ -1,0 +1,9 @@
+﻿Select 
+		IT1.*,
+		IT2.Id as ParentId,
+		IT2.Name as Parent
+	from ItemType IT1
+		left join ItemType IT2 on IT2.Id = IT1.ParentId
+			Where	(@Id = 0 or IT1.Id = @Id) and
+					(@Name = '' or IT1.Name like '%' + @Name + '%') and
+					IT1.IsDeleted = 0

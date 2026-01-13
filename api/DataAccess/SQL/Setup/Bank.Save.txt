@@ -1,0 +1,15 @@
+﻿If @Id > 0
+Begin
+	Update Bank Set 
+		Name = @Name,
+		Branch = @Branch,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+	Begin
+		Insert into Bank(Name, Branch, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Branch, GETDATE(), @CurrentUser, 0)
+	End

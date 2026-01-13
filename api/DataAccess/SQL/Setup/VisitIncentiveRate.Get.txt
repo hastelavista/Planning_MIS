@@ -1,0 +1,7 @@
+﻿Select r.*, f.Name as FiscalYearName, d.Name as DesignationName
+	from dbo.VisitIncentiveRate as r
+		inner join dbo.FiscalYear as f on r.FiscalYearId = f.Id
+		inner join dbo.Designation as d on r.DesignationId = d.Id
+		where (@Id = 0 or r.Id = @Id)
+			and (@DesignationId = 0 or d.Id = @DesignationId)
+			and r.IsDeleted = 0

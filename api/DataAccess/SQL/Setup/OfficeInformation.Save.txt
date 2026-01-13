@@ -1,0 +1,23 @@
+﻿If @Id > 0
+	Begin
+		Update OfficeInformation Set
+			MainHeading = @MainHeading,
+			SubHeading1 = @SubHeading1,
+			SubHeading2 = @SubHeading2,
+			SubHeading3 = @SubHeading3,
+			Name = @Name,
+			Address1 = IsNull(@Address1, ''),
+			Address2 = @Address2,
+			Phone = @Phone,
+			Email = @Email,
+			Website = @Website,
+			Footer = @Footer,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @UserId
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into OfficeInformation(MainHeading, SubHeading1, SubHeading2, SubHeading3, Name, Address1, Address2, Phone, Email, Website, Footer, CreatedDate, CreatedBy, IsDeleted)
+			Values(@MainHeading, @SubHeading1, @SubHeading2, @SubHeading3, @Name, @Address1, @Address2, @Phone, @Email, @Website, @Footer, GETDATE(), @UserId, 0)
+	End

@@ -1,0 +1,35 @@
+﻿If(@Id = 0)
+Begin
+	Insert Into Committee (RegistrationNo, RegisteredDate, RegisteredMiti, Name, WardId, Address, FormedBy, TotalAttendedMember, BankId, AccountNo, CommitteeTypeId, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values (@RegistrationNo, @RegisteredDate, @RegisteredMiti, @Name, @WardId, @Address, @FormedBy, @TotalAttendedMember, @BankId, @AccountNo, @CommitteeTypeId, GETDATE(), @CurrentUser, Null, Null, 0);
+
+	Set @Id = SCOPE_IDENTITY()
+End
+Else
+Begin
+	Update Committee Set 
+		RegistrationNo = @RegistrationNo,
+		RegisteredDate = @RegisteredDate, 
+		RegisteredMiti = @RegisteredMiti, 
+		Name = @Name, 
+		WardId = @WardId,
+		Address = @Address,
+		FormedBy = @FormedBy,
+		TotalAttendedMember = @TotalAttendedMember,
+		BankId = @BankId,
+		AccountNo = @AccountNo,
+		CommitteeTypeId = @CommitteeTypeId,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id;
+End
+
+Select @Id Id
+
+
+
+
+
+
+
+

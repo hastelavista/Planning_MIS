@@ -1,0 +1,16 @@
+﻿If @Id > 0
+Begin
+	Update ImplementationLevel Set
+		Name = @Name,
+		Code = @Code,
+		Threshold = @Threshold,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into ImplementationLevel(Name, Code, Threshold, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@Name, @Code, @Threshold, GETDATE(), @CurrentUser, Null, Null, 0)
+End

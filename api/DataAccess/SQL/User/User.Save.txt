@@ -1,0 +1,26 @@
+﻿
+If exists (Select Top 1 1 from dbo.[User] where UserName = @UserName and Id <> @Id)
+	Throw 51000, N'Duplicate Username', 1
+
+If @Id > 0
+Begin
+	Update [User] Set
+		FullName = @FullName,
+		UserName = @UserName,
+		IsActive = @IsActive,
+		IsDepartmentUser = @IsDepartmentUser,
+		UserTypeId = @UserTypeId,
+		WardId = @WardId,
+		EmployeeId = @EmployeeId,
+		Password = CASE WHEN @Password IS NOT NULL THEN @Password ELSE Password END,
+		Salt = CASE WHEN @Salt IS NOT NULL THEN @Salt ELSE Salt END,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	where Id = @Id
+End
+
+Else
+Begin
+	Insert into [User](FullName, UserName, Password, Salt, IsActive, IsDepartmentUser, UserTypeId, WardId, EmployeeId, CreatedDate, CreatedBy)
+		Values(@FullName, @UserName, @Password, @Salt, @IsActive, @IsDepartmentUser, @UserTypeId, @WardId, @EmployeeId, GETDATE(), @CurrentUser)
+End

@@ -1,0 +1,204 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SQL\Setup\Activity.Get.txt" />
+    <None Remove="SQL\Setup\Activity.Save.txt" />
+    <None Remove="SQL\Setup\ActivityGroup.Get.txt" />
+    <None Remove="SQL\Setup\ActivityGroup.Save.txt" />
+    <None Remove="SQL\Setup\ActivityRate.Get.txt" />
+    <None Remove="SQL\Setup\AgreementFormat.Get.txt" />
+    <None Remove="SQL\Setup\AgreementFormat.Save.txt" />
+    <None Remove="SQL\Setup\Bank.Delete.txt" />
+    <None Remove="SQL\Setup\Bank.Save.txt" />
+    <None Remove="SQL\Setup\Beneficiary.Save.txt" />
+    <None Remove="SQL\Setup\BudgetAllocation.Get.txt" />
+    <None Remove="SQL\Setup\BudgetAllocation.GetProjectDetail.txt" />
+    <None Remove="SQL\Setup\BudgetAllocation.Save.txt" />
+    <None Remove="SQL\Setup\BudgetSource.Get.txt" />
+    <None Remove="SQL\Setup\BudgetSource.Save.txt" />
+    <None Remove="SQL\Setup\BudgetSubTitle.Get.txt" />
+    <None Remove="SQL\Setup\BudgetSubTitle.Save.txt" />
+    <None Remove="SQL\Setup\Checklist.Save.txt" />
+    <None Remove="SQL\Setup\Closing.Save.txt" />
+    <None Remove="SQL\Setup\Committee.Get.txt" />
+    <None Remove="SQL\Setup\Committee.Save.txt" />
+    <None Remove="SQL\Setup\CommitteeDetail.Get.txt" />
+    <None Remove="SQL\Setup\CommitteeLetter.Get.txt" />
+    <None Remove="SQL\Setup\CommitteeLetter.Save.txt" />
+    <None Remove="SQL\Setup\CommitteeType.Save.txt" />
+    <None Remove="SQL\Setup\Configuration.Save.txt" />
+    <None Remove="SQL\Setup\Department.Get.txt" />
+    <None Remove="SQL\Setup\Department.Save.txt" />
+    <None Remove="SQL\Setup\Designation.Get.txt" />
+    <None Remove="SQL\Setup\Designation.Save.txt" />
+    <None Remove="SQL\Setup\DonorType.Save.txt" />
+    <None Remove="SQL\Setup\DropDownList.ActivityGroup.Get.txt" />
+    <None Remove="SQL\Setup\DropDownList.BudgetAllocation.Get.txt" />
+    <None Remove="SQL\Setup\DropDownList.ProjectGroup.Get.txt" />
+    <None Remove="SQL\Setup\DropdownModel.Get.txt" />
+    <None Remove="SQL\Setup\Employee.Get.txt" />
+    <None Remove="SQL\Setup\Employee.GetWithUserName.txt" />
+    <None Remove="SQL\Setup\Employee.Save.txt" />
+    <None Remove="SQL\Setup\ExpensesHead.Get.txt" />
+    <None Remove="SQL\Setup\ExpensesHead.Save.txt" />
+    <None Remove="SQL\Setup\Firm.Save.txt" />
+    <None Remove="SQL\Setup\FiscalYear.Save.txt" />
+    <None Remove="SQL\Setup\ImplementationLevel.Get.txt" />
+    <None Remove="SQL\Setup\ImplementationLevel.Save.txt" />
+    <None Remove="SQL\Setup\ImplementationModel.Get.txt" />
+    <None Remove="SQL\Setup\ImplementationModel.Save.txt" />
+    <None Remove="SQL\Setup\Individual.Save.txt" />
+    <None Remove="SQL\Setup\Item.Get.txt" />
+    <None Remove="SQL\Setup\Item.Save.txt" />
+    <None Remove="SQL\Setup\ItemRate.Get.txt" />
+    <None Remove="SQL\Setup\ItemRate.Save.txt" />
+    <None Remove="SQL\Setup\ItemType.Get.txt" />
+    <None Remove="SQL\Setup\ItemType.Save.txt" />
+    <None Remove="SQL\Setup\LetterFormat.Get.txt" />
+    <None Remove="SQL\Setup\LetterFormat.Process.txt" />
+    <None Remove="SQL\Setup\LetterFormat.Save.txt" />
+    <None Remove="SQL\Setup\Member.Delete.txt" />
+    <None Remove="SQL\Setup\Member.Get.txt" />
+    <None Remove="SQL\Setup\Member.Save.txt" />
+    <None Remove="SQL\Setup\MemberCheckCitizenshipNo.txt" />
+    <None Remove="SQL\Setup\MemberGetByCommitteeId.Get.txt" />
+    <None Remove="SQL\Setup\Norms.Get.txt" />
+    <None Remove="SQL\Setup\Norms.Save.txt" />
+    <None Remove="SQL\Setup\NormsType.Save.txt" />
+    <None Remove="SQL\Setup\OfficeInformation.Save.txt" />
+    <None Remove="SQL\Setup\ProgressIndicator.Get.txt" />
+    <None Remove="SQL\Setup\ProgressIndicator.Save.txt" />
+    <None Remove="SQL\Setup\ProjectGroup.Get.txt" />
+    <None Remove="SQL\Setup\ProjectGroup.Save.txt" />
+    <None Remove="SQL\Setup\ProjectGroupParentName.Get.txt" />
+    <None Remove="SQL\Setup\PublicRepresentative.Get.txt" />
+    <None Remove="SQL\Setup\PublicRepresentative.Save.txt" />
+    <None Remove="SQL\Setup\RemProgressIndicatorAccToProject.Get.txt" />
+    <None Remove="SQL\Setup\Sector.Save.txt" />
+    <None Remove="SQL\Setup\SubSector.Get.txt" />
+    <None Remove="SQL\Setup\SubSector.Save.txt" />
+    <None Remove="SQL\Setup\Target.Save.txt" />
+    <None Remove="SQL\Setup\Unit.Get.txt" />
+    <None Remove="SQL\Setup\Unit.Save.txt" />
+    <None Remove="SQL\Setup\UnitType.Save.txt" />
+    <None Remove="SQL\Setup\VisitIncentiveRate.Get.txt" />
+    <None Remove="SQL\Setup\VisitIncentiveRate.Save.txt" />
+    <None Remove="SQL\Setup\Ward.Save.txt" />
+    <None Remove="SQL\User\User.Get.txt" />
+    <None Remove="SQL\User\User.Save.txt" />
+    <None Remove="SQL\User\UserType.Save.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SQL\Setup\Activity.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Activity.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ActivityGroup.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ActivityGroup.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ActivityRate.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\AgreementFormat.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\AgreementFormat.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Bank.Delete.txt" />
+    <EmbeddedResource Include="SQL\Setup\Bank.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Beneficiary.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetAllocation.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetAllocation.GetProjectDetail.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetAllocation.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetSource.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetSource.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetSubTitle.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\BudgetSubTitle.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Checklist.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Closing.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Committee.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Committee.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\CommitteeDetail.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\CommitteeLetter.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\CommitteeLetter.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\CommitteeType.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Configuration.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Department.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Department.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Designation.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Designation.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\DonorType.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\DropDownList.ActivityGroup.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\DropDownList.BudgetAllocation.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\DropDownList.ProjectGroup.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\DropdownModel.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Employee.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Employee.GetWithUserName.txt" />
+    <EmbeddedResource Include="SQL\Setup\Employee.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ExpensesHead.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ExpensesHead.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Firm.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\FiscalYear.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ImplementationLevel.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ImplementationLevel.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ImplementationModel.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ImplementationModel.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Individual.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Item.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Item.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ItemRate.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ItemRate.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ItemType.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ItemType.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\LetterFormat.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\LetterFormat.Process.txt" />
+    <EmbeddedResource Include="SQL\Setup\LetterFormat.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Member.Delete.txt" />
+    <EmbeddedResource Include="SQL\Setup\Member.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Member.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\MemberCheckCitizenshipNo.txt" />
+    <EmbeddedResource Include="SQL\Setup\MemberGetByCommitteeId.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Norms.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Norms.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\NormsType.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\OfficeInformation.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ProgressIndicator.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ProgressIndicator.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ProjectGroup.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\ProjectGroup.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\ProjectGroupParentName.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\PublicRepresentative.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\PublicRepresentative.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\RemProgressIndicatorAccToProject.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Sector.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\SubSector.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\SubSector.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Target.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Unit.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\Unit.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\UnitType.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\VisitIncentiveRate.Get.txt" />
+    <EmbeddedResource Include="SQL\Setup\VisitIncentiveRate.Save.txt" />
+    <EmbeddedResource Include="SQL\Setup\Ward.Save.txt" />
+    <EmbeddedResource Include="SQL\User\User.Get.txt" />
+    <EmbeddedResource Include="SQL\User\User.Save.txt" />
+    <EmbeddedResource Include="SQL\User\UserType.Save.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Helper\Helper.csproj" />
+  </ItemGroup>
+	
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="DateMiti">
+			<HintPath>..\Packages\DateMiti.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+</Project>

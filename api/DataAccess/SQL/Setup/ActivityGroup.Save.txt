@@ -1,0 +1,17 @@
+﻿If @Id > 0
+	Begin
+		Update ActivityGroup Set
+			Name = @Name,
+			Code = @Code,
+			ParentId = @ParentId,
+			NormsTypeId = @NormsTypeId,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+
+Else
+	Begin
+		Insert into ActivityGroup(Name, Code, ParentId, NormsTypeId, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Code, @ParentId, @NormsTypeId, GETDATE(), @CurrentUser, 0)
+	End

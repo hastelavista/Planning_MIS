@@ -1,0 +1,6 @@
+@Planning_MIS.API_HostAddress = http://localhost:5113
+
+GET {{Planning_MIS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

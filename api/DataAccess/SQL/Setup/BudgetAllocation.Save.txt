@@ -1,0 +1,27 @@
+﻿If @Id > 0
+Begin
+	Update dbo.BudgetAllocation Set
+			FiscalYearId = @FiscalYearId,
+			Name = @Name,
+			Amount = @Amount,
+			WardId = NullIf(@WardId, 0),
+			ParentId = @ParentId,
+			ModifiedBy = @CurrentUser,
+			ModifiedDate = GETDATE()
+		Where Id = @Id
+
+	Set @ErrorMessage = ''
+End
+Else
+Begin
+	If exists (Select Top 1 1 from dbo.BudgetAllocation where FiscalYearId = @FiscalYearId and Name = @Name and IsDeleted = 0)
+	Begin
+		Set @ErrorMessage = N'यो शिर्षकमा पहिले नै बजेट राखिएको छ ।'
+		Return
+	End 
+
+	Insert into dbo.BudgetAllocation (FiscalYearId, WardId, ParentId, Name, Amount, CreatedDate, CreatedBy, IsDeleted)
+		Values (@FiscalYearId, NullIf(@WardId, 0), @ParentId, @Name, @Amount, GETDATE(), @CurrentUser, 0)
+
+	Set @ErrorMessage = ''
+End

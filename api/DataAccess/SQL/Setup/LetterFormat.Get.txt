@@ -1,0 +1,31 @@
+﻿Declare @_implementationModelId int = 0
+
+If @ProjectId > 0
+Begin
+	Select Top 1 @_implementationModelId = ImplementationModelId
+		from dbo.ProjectModelProject
+			where ProjectId = @ProjectId
+				and IsDeleted = 0
+
+	If not exists (Select Top 1 1 from dbo.LetterFormat where ImplementationModelId = @_implementationModelId)
+		Set @_implementationModelId = 0
+End
+
+SELECT 
+	LF.Id,
+	LF.LetterType as LetterTypeId,
+	LF.Name,
+	LF.Subject,
+	LF.Body as LetterBody,
+	LT.Name as LetterType,
+	LF.ImplementationModelId,
+	IsNull(impl.Name, '') as ImplementationModel
+		FROM LetterFormat LF
+		INNER JOIN LetterType LT on LT.Id = LF.LetterType
+		Left Join dbo.ImplementationModel impl on LF.ImplementationModelId = impl.Id
+			WHERE (@Id = 0 or LF.Id = @Id) AND
+				(@Name = '' or LF.Name = @Name) AND
+				(@LetterType = 0 or LF.LetterType = @LetterType) AND
+				LF.IsDeleted = 0 AND
+				(@_implementationModelId = 0 or LF.ImplementationModelId = @_implementationModelId)
+			ORDER BY IsNull(impl.Name, '')

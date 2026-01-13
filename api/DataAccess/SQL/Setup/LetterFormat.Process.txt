@@ -1,0 +1,509 @@
+﻿--Declare @ProjectId int = 2221, --1044
+		--@CommitteeId int = 0,
+		--@EvaluationId int = 0
+
+Create Table #Data
+	(
+		MetaData nvarchar(100),
+		Value nvarchar(4000)
+	)
+
+	--Set @EstimatedCost = (Select top 1 IsNull(PayableAmount, 0) from ProjectEstimatedCost Where ProjectId = 1103 and IsDeleted = 0 Order By RevisedNo Desc)
+
+	if @CommitteeId <= 0
+	Begin
+		Declare @CommitteeChair nvarchar(200)
+
+		Select Top 1 @CommitteeId = CommitteeId from dbo.ProjectAgreement where ProjectId = @ProjectId
+			and IsDeleted = 0
+	End
+	Insert into #Data 
+		Select '@OfficeName', Name
+			from OfficeInformation
+		Union All
+
+		--- If CommitteeId is given as arguement Start ---
+		Select '@CommitteeChair', M.Name 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'अध्यक्ष' and CM.IsDeleted = 0
+		Union All
+		Select '@FinancePerson', M.Name 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner Join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'कोषाध्यक्ष' and CM.IsDeleted = 0
+		Union All
+		Select '@Secretary', M.Name 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner Join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'सचिव' and CM.IsDeleted = 0
+		Union All
+		Select '@CommitteeChID', M.CitizenshipNo 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'अध्यक्ष' and CM.IsDeleted = 0
+		Union All
+		Select '@FinancePerID', M.CitizenshipNo 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner Join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'कोषाध्यक्ष' and CM.IsDeleted = 0
+		Union All
+		Select '@SecretID', M.CitizenshipNo 
+			from dbo.CommitteeMember as CM
+				Inner Join dbo.Member as M on CM.MemberId = M.Id
+				Inner Join dbo.Designation as D on CM.DesignationId = D.Id
+					where CM.CommitteeId = @CommitteeId and D.Name = N'सचिव' and CM.IsDeleted = 0
+		Union All
+		Select '@CommitteeName', Name
+			from dbo.Committee where Id = @CommitteeId
+		Union All
+		Select '@CommitteeWardNo', W.Name
+			from dbo.Committee C
+				left join Ward W on W.Id = C.WardId 
+			where C.Id = @CommitteeId
+		Union All
+		Select '@CommitteeAddress', Address
+			from dbo.Committee where Id = @CommitteeId
+		Union All
+		Select '@RegisteredDate', REPLACE(RegisteredMiti,'-','/')
+			from dbo.Committee where Id = @CommitteeId
+		Union All
+		Select '@Bank', B.Name
+			from dbo.Committee C
+				left join Bank B on B.Id = C.BankId
+					where C.Id = @CommitteeId
+		Union All
+		Select '@Branch', B.Branch 
+			from dbo.Committee C
+				left join Bank B on B.Id = C.BankId
+					where C.Id = @CommitteeId
+		Union All
+		Select '@AccountNo', AccountNo
+			from dbo.Committee where Id = @CommitteeId
+		Union All
+		Select MetaData, MetaValue from (
+		Select Top 1 '@ProjectName' as MetaData, P.Name as MetaValue
+			from ProjectModelProject PMP
+			inner join Project P on P.Id = PMP.ProjectId
+				where CommitteeId = @CommitteeId and PMP.IsDeleted = 0
+				order by PMP.Id desc
+		) as tbl
+		Union All
+		Select '@FiscalYear', F.Name
+			from ProjectModelProject PMP
+			inner join Project P on P.Id = PMP.ProjectId
+			inner join FiscalYear F on F.Id = P.FiscalYearId
+				where PMP.CommitteeId = @CommitteeId
+		--- If CommitteeId is given as arguement End ---
+		Union All
+		Select '@FirmRepresentative', Representative
+			from dbo.ProjectModelProject PMP
+				inner join dbo.Firm F on F.id = PMP.FirmId
+				where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@FirmRepresentiveDesignation', RepresentativeDesignation
+			from dbo.ProjectModelProject PMP
+				inner join dbo.Firm F on F.id = PMP.FirmId
+				where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@FirmRepresentativeAddress', RepresentativeAddress
+			from dbo.ProjectModelProject PMP
+				inner join dbo.Firm F on F.id = PMP.FirmId
+				where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		--Select '@WorkingPartyName', IsNull(IsNull(C.Name, F.Name), E.Name)
+		Select '@WorkingPartyName', IsNull(IsNull(C.Name, F.Name), I.Name)
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join Firm F on F.Id = PMP.FirmId
+				--left join Employee E on E.Id = PMP.EmployeeId
+				LEFT JOIN Individual as I ON I.Id = PMP.IndividualId
+					where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		--Select '@WorkingPartyAddress', IsNull(IsNull(C.Address, F.Address), E.Address)
+		Select '@WorkingPartyAddress', IsNull(IsNull(C.Address, F.Address), I.Name)
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join Firm F on F.Id = PMP.FirmId
+				--left join Employee E on E.Id = PMP.EmployeeId
+				LEFT JOIN Individual as I ON I.Id = PMP.IndividualId
+					where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@WorkingPartyContactNo', ISNULL(IsNull(M.MobileNo, F.MobileNo),I.MobileNo)
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join CommitteeMember as cm ON cm.CommitteeId = c.Id AND cm.IsDeleted = 0
+				left Join Member as m ON m.Id = cm.MemberId AND m.IsAccountHolder = 1 AND m.IsDeleted = 0
+				left join Firm F on F.Id = PMP.FirmId
+				--left join Employee E on E.Id = PMP.EmployeeId
+				LEFT JOIN Individual as I ON I.Id = PMP.IndividualId
+					where ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@WorkingPartyBank', ISNULL(IsNull(B.Name, F.Bank),Bi.Name)
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join Bank B on B.Id = C.BankId
+				left join CommitteeMember as cm ON cm.CommitteeId = c.Id AND cm.IsDeleted = 0
+				left Join Member as m ON m.Id = cm.MemberId AND m.IsAccountHolder = 1 AND m.IsDeleted = 0
+				left join Firm F on F.Id = PMP.FirmId
+				LEFT JOIN Individual i on i.Id = pmp.IndividualId
+				Left join Bank Bi on Bi.Id = i.BankId
+					where PMP.ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@WorkingPartyBankBranch', IsNull(ISNULL(B.Branch, F.Branch), '')
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join Bank B on B.Id = C.BankId
+				left join CommitteeMember as cm ON cm.CommitteeId = c.Id AND cm.IsDeleted = 0
+				left Join Member as m ON m.Id = cm.MemberId AND m.IsAccountHolder = 1 AND m.IsDeleted = 0
+				left join Firm F on F.Id = PMP.FirmId
+				LEFT JOIN Individual i on i.Id = pmp.IndividualId
+				Left join Bank Bi on Bi.Id = i.BankId
+					where PMP.ProjectId = @ProjectId and PMP.IsDeleted = 0
+		Union All
+		Select '@WorkingPartyAccountNo', ISNULL(IsNull(C.AccountNo, F.AccountNo),I.AccountNo)
+			from dbo.ProjectModelProject PMP
+				left join Committee C on C.Id = PMP.CommitteeId
+				left join Bank B on B.Id = C.BankId
+				left join CommitteeMember as cm ON cm.CommitteeId = c.Id AND cm.IsDeleted = 0
+				left Join Member as m ON m.Id = cm.MemberId AND m.IsAccountHolder = 1 AND m.IsDeleted = 0
+				left join Firm F on F.Id = PMP.FirmId
+				LEFT JOIN Individual i on i.Id = pmp.IndividualId
+				Left join Bank Bi on Bi.Id = i.BankId
+					where PMP.ProjectId = @ProjectId and PMP.IsDeleted = 0
+		UNION ALL
+			Select '@CommitteeWard', w.Name 
+				from ProjectModelProject as pmp
+					INNER JOIN Committee as c ON pmp.CommitteeId =  c.Id
+					INNER JOIN Ward as w ON c.WardId =  w.Id
+				Where pmp.ProjectId = @ProjectId AND pmp.IsDeleted = 0
+		Union All
+		Select '@Quoatation' + Convert(varchar, j.Sno), j.CompanyName
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(QuoatationDetailJSON) with
+				(
+					Sno int,
+					CompanyName nvarchar(400),
+					Address nvarchar(400),
+					Amount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@QuoatationAddress' + Convert(varchar, j.Sno), j.Address
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(QuoatationDetailJSON) with
+				(
+					Sno int,
+					CompanyName nvarchar(400),
+					Address nvarchar(400),
+					Amount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@QuoatationAmt' + Convert(varchar, j.Sno), Convert(varchar, j.Amount)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(QuoatationDetailJSON) with
+				(
+					Sno int,
+					CompanyName nvarchar(400),
+					Address nvarchar(400),
+					Amount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@QuoatationEstVariance' + Convert(varchar, j.Sno), Convert(varchar, j.EstVariance)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(QuoatationDetailJSON) with
+				(
+					Sno int,
+					EstVariance decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@QuoatationMiti' + Convert(varchar, j.Sno), Convert(varchar, j.ApplyMiti)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(QuoatationDetailJSON) with
+				(
+					Sno int,
+					ApplyMiti nvarchar(50)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@noticeDate', j.NoticeDate
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					NoticeDate nvarchar(50)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@contractNo', j.ContractNo
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					ContractNo nvarchar(100)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@acceptedDate', j.AcceptedDate
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					AcceptedDate nvarchar(50)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@contractAmountInWord', dbo.[AmountToWord_np](j.ContractAmount)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					ContractAmount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@contractAmount', Convert(varchar, j.ContractAmount)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					ContractAmount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@depositAmountInWord', dbo.[AmountToWord_np](j.DepositAmount)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					DepositAmount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@depositAmount', Convert(varchar, j.DepositAmount)
+			from dbo.ProjectModelProject PMP
+				cross apply openjson(ContractDetailJSON) with
+				(
+					DepositAmount decimal(18, 2)
+				) as j
+				where PMP.ProjectId = @ProjectId
+		Union All
+		Select '@FiscalYear', Name from FiscalYear where Id = (Select FiscalYearId from Project where Id = @ProjectId)
+		Union All
+		Select '@RunningFiscalYear', Name from FiscalYear where Id = (Select RunningFiscalYearId from Project where Id = @ProjectId)
+		Union All
+		Select '@Sector', S.Name from dbo.Project P
+			inner join Sector S on S.Id = P.SectorId where P.Id = @ProjectId
+		Union All
+		Select '@SubSector', SS.Name from dbo.Project P
+			inner join SubSector SS on SS.Id = P.SubSectorId where P.Id = @ProjectId
+		Union All
+		Select '@ExpensesHead', EH.Name from dbo.Project P
+			inner join ExpensesHead Eh on EH.Id = P.ExpensesHeadId where P.Id = @ProjectId
+		Union All
+		Select '@BudgetSubTitleName', BS.Name from dbo.Project P
+			left join BudgetSubTitle BS on BS.Id = P.BudgetSubTitleId
+				where P.Id = @ProjectId
+		Union All
+		Select '@BudgetSubTitleNo', BS.Code from dbo.Project P
+			left join BudgetSubTitle BS on BS.Id = P.BudgetSubTitleId
+				where P.Id = @ProjectId
+		Union All
+		Select '@WardNo', Name from Ward where Id = (Select WardId from dbo.Project where Id = @ProjectId)
+		Union All
+		Select '@Location', Location from dbo.Project where Id = @ProjectId
+		Union All
+		Select '@ProjectName', Name from dbo.Project where Id = @ProjectId
+		Union All
+		Select '@Objective', Objective from dbo.Project where Id = @ProjectId
+		Union All
+		--Select '@AgreementDate', SigningMiti1 from dbo.ProjectAgreement where ProjectId = @ProjectId
+		SELECT TOP 1 '@AgreementDate', REPLACE(papd.SigningMiti,'-','/') FROM ProjectAgreement AS pa
+				INNER JOIN ProjectAgreementPartyDetail AS papd ON pa.Id = papd.ProjectAgreementId AND papd.IsDeleted = 0
+					WHERE pa.IsDeleted = 0 AND pa.projectId = @projectId
+		Union All
+		Select '@AllocatedBudget', IsNull(Convert(varchar, EstimatedBudget), 0) from dbo.Project Where Id = @ProjectId
+		Union All
+		Select '@EstimatedCost', IsNull(Convert(varchar, EstimatedCost), 0) from dbo.ProjectEstimatedCost
+			where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@OfficeCost', IsNull(Convert(varchar, Amount), 0) from dbo.ProjectEstimatedCostDetail CD
+			Left Join ProjectEstimatedCost C on C.Id = CD.ProjectEstimatedCostId and C.IsDeleted = 0
+			where ConfigurationId = (Select Top 1 Id from Configuration where [Type] = 'OfficeCost' and IsForEstimation = 1) and C.ProjectId = @ProjectId --and C.IsDeleted = 0
+		Union All
+		Select '@TotalCost', IsNull(Convert(varchar, Amount), 0) from dbo.ProjectEstimatedCostDetail CD
+			Left Join ProjectEstimatedCost C on C.Id = CD.ProjectEstimatedCostId and C.IsDeleted = 0
+			where ConfigurationId = (Select Top 1 Id from Configuration where [Type] = 'TotalCost' and IsForEstimation = 1) and C.ProjectId = @ProjectId --and C.IsDeleted = 0
+		Union All
+		Select '@TotalCostInWord', dbo.[AmountToWord_np](IsNull(Convert(varchar, Amount), 0)) from dbo.ProjectEstimatedCostDetail CD
+			Left Join ProjectEstimatedCost C on C.Id = CD.ProjectEstimatedCostId and C.IsDeleted = 0
+			where ConfigurationId = (Select Top 1 Id from Configuration where [Type] = 'TotalCost' and IsForEstimation = 1) and C.ProjectId = @ProjectId --and C.IsDeleted = 0
+		Union All
+		Select '@CashDonation', IsNull(Convert(varchar, Sum(CostAmount)), 0) from dbo.ProjectAgreementCostDetail as C
+			inner join dbo.ProjectAgreement as A on C.ProjectAgreementId = A.Id
+			where A.ProjectId = @ProjectId and C.DonorTypeId = 11
+		Union All
+		Select '@LabourDonation', IsNull(Convert(varchar, Amount), 0) from dbo.ProjectEstimatedCostDetail CD
+			Left Join ProjectEstimatedCost C on C.Id = CD.ProjectEstimatedCostId and C.IsDeleted = 0
+		where ConfigurationId = (Select Top 1 Id from Configuration where [Type] = 'LabourDonation' and IsForEstimation = 1) and C.ProjectId = @ProjectId --and C.IsDeleted = 0
+		Union All
+		Select '@Contingency', Convert(varchar, Amount) from dbo.ProjectEstimatedCostDetail CD
+			Left Join ProjectEstimatedCost C on C.Id = CD.ProjectEstimatedCostId and C.IsDeleted = 0
+		Where ConfigurationId = (Select Top 1 Id from [Configuration] Where [Type] = 'Contingency') and C.ProjectId = @ProjectId
+		Union All
+		Select '@OtherCost', IsNull(Convert(varchar, Sum(CostAmount)), 0) from dbo.ProjectAgreementCostDetail as C
+			inner join dbo.ProjectAgreement as A on C.ProjectAgreementId = A.Id
+			where A.ProjectId = @ProjectId and C.DonorTypeId not in (10, 11)
+		Union All
+		Select Top 1 '@ProjectStartDate', REPLACE(ProjectStartMiti,'-','/') from dbo.ProjectModelProject where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select Top 1 '@ProjectCompletionDate', REPLACE(ProjectCompleteMiti,'-','/') from dbo.ProjectModelProject where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@ImplementationLevel', IL.Name from dbo.Project P left join ImplementationLevel IL on IL.Id = P.ImplementationLevelId where P.Id = @ProjectId
+		Union All 
+		Select '@AgreementAmount', Convert(varchar, Sum(IsNull(Amount, 0) + IsNull(VATAmount, 0))) from dbo.ContractorCost Where ProjectId = @ProjectId and IsDeleted = 0
+		Union All 
+		Select '@AgreeAmtInWord', dbo.AmountToWord_np(IsNull(Convert(varchar, AgreementAmount), 0)) from dbo.ProjectAgreement Where ProjectId = @ProjectId and IsDeleted = 0
+		--Evaluation
+		Union All
+		Select '@EvaluatedCost', IsNull(Convert(varchar, EvaluatedCost), 0) from ProjectEvaluation where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@EvalCostInWord', dbo.AmountToWord_np(IsNull(Convert(varchar, EvaluatedCost), 0)) from ProjectEvaluation where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@PaidAmount', IsNull(Convert(varchar, PaidAmount), 0) from ProjectEvaluation Where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@PaidAmtInWord', dbo.AmountToWord_np(IsNull(Convert(varchar, PaidAmount), 0)) from ProjectEvaluation where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@CompleteDate', REPLACE(CompleteMiti,'-','/') from ProjectEvaluation Where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@EvaluatedDate', REPLACE(CompleteMiti,'-','/') from ProjectEvaluation Where ProjectId = @ProjectId and Id = @EvaluationId
+		Union All
+		Select '@EvaluatedCostTotal', IsNull(Convert(varchar, Sum(EvaluatedCost)), 0) from ProjectEvaluation where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@PaidAmountTotal', IsNull(Convert(varchar, Sum(PaidAmount)), 0) from ProjectEvaluation Where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@CompleteDateLast', REPLACE(CompleteMiti,'-','/') from ProjectEvaluation Where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select Top 1 '@EvaluatedDateLast', REPLACE(EvaluatedMiti,'-','/') from ProjectEvaluation Where ProjectId = @ProjectId and IsDeleted = 0 and InstallmentNo = 3
+		Union All
+		Select '@AdvanceAmount', IsNull(Convert(varchar, Sum(PaidAmount)), 0) from ProjectPayment Where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@DueAmount', IsNull(Convert(varchar, (Select top 1 IsNull(PayableAmount, 0) from ProjectEstimatedCost Where ProjectId = @ProjectId and IsDeleted = 0 Order By RevisedNo Desc)
+				- Sum(PaidAmount)), 0)   from ProjectPayment Where ProjectId = @ProjectId and IsDeleted = 0
+		Union All
+		Select '@' + dt.Code as [MetaData], IsNull(Convert(varchar, d.CostAmount), '') as [MetaValue] 
+			from dbo.DonorType as dt 
+			left join
+			(
+				Select d.DonorTypeId, CostAmount from dbo.ProjectAgreement as ag
+					inner join dbo.ProjectAgreementCostDetail as d on ag.Id = d.ProjectAgreementId
+					where ag.ProjectId = @ProjectId and ag.IsDeleted = 0
+			) d on dt.Id = d.DonorTypeId
+		Union All
+		Select '@' + IsNull(c1.Code, 'TT') as [MetaData], IsNull(Convert(varchar, d.Amount), '') as [MetaValue] 
+			from dbo.Configuration as c1 
+			left join
+			(
+				Select ConfigurationId, d.Amount
+					from dbo.ProjectEstimatedCost as c
+						inner join dbo.ProjectEstimatedCostDetail as d on c.Id = d.ProjectEstimatedCostId
+						where c.ProjectId = @ProjectId and c.IsDeleted = 0
+			) d on c1.Id = d.ConfigurationId
+			where c1.IsForEstimation = 1 or c1.IsForEvaluation = 1 and c1.IsDeleted = 0
+		Union All
+		Select '@AdvanceAmount' as [MetaData], Convert(varchar, PaidAmount) as [MetaValue] from dbo.ProjectPayment
+			where Id = @AdvanceId
+		Union All
+		Select '@AdvAmtInWord' as [MetaData], dbo.AmountToWord_np(PaidAmount) as [MetaValue]
+			from dbo.ProjectPayment
+				where Id = @AdvanceId
+		Union All
+		Select '@AdvanceMiti' as [MetaData], Miti as [MetaValue]
+			from dbo.ProjectPayment
+				where Id = @AdvanceId
+		UNION ALL
+		SELECT '@ProjectCompletedMiti', CompletedMiti FROM dbo.Project
+			WHERE Id = @projectId AND IsDeleted = 0
+		UNION ALL
+		SELECT '@TimeLetterMiti', LetterMiti FROM dbo.ProjectTimeExtended
+			WHERE Id = @timeExtendedId AND ProjectId = @projectId and IsDeleted = 0
+		UNION ALL
+		SELECT '@TimeExtendedCompletedMiti', ExtendedCompletedMiti FROM dbo.ProjectTimeExtended
+			WHERE Id = @timeExtendedId AND ProjectId = @projectId and IsDeleted = 0
+		UNION ALL
+		Select '@ProjectIncharge', e.Name
+			from dbo.ProjectIncharge i 
+				inner join dbo.[User] u on i.[UserId] = u.Id
+				inner join dbo.[Employee] e on u.EmployeeId = e.Id
+			WHERE ProjectId = @projectId and i.IsDeleted = 0
+		UNION ALL
+		Select '@RedBookRef', RedBookRef from dbo.Project WHERE Id = @projectId 
+		UNION ALL
+		SELECT '@WorkOrderMiti', Miti FROM Projectletter WHERE ProjectId = @projectId And  LetterTypeid = 2 AND IsDeleted = 0
+		
+
+	Insert into #Data
+		SELECT '@PayingDetail', 
+			Case When IsNull(EvaluatedCost, 0) <= 100000 
+				Then N'उपभोक्ता समितिका अध्यक्ष श्री ' + (Select Top 1 Value from #Data where MetaData = '@CommitteeChair') + N'को'
+				Else N'उपभोक्ता समितिको' End
+			from ProjectEvaluation as ev
+				where ProjectId = @ProjectId and Id = @EvaluationId
+
+	If @EvaluationId > 0
+	Begin
+		Declare @PrevEvalCost decimal(18, 2), @UptoEvalCost decimal(18, 2)
+		Select @PrevEvalCost = Sum(e1.EvaluatedCost), @UptoEvalCost = IsNull(Sum(e1.EvaluatedCost), 0) + e.EvaluatedCost
+			from dbo.ProjectEvaluation e with (nolock)
+				left join dbo.ProjectEvaluation as e1 with (nolock) on e.ProjectId = e1.ProjectId and e1.IsDeleted = 0 and e1.EvaluatedDate < e.EvaluatedDate
+				where e.Id = @EvaluationId
+				group by e.Id, e.EvaluatedCost
+
+		Insert into #Data
+			Select '@PrevEvalCost', IsNull(@PrevEvalCost, 0)
+			Union All
+			Select '@UptoEvalCost', @UptoEvalCost
+
+		Insert into #Data
+		Select '@P_' + IsNull(c1.Code, 'TT') as [MetaData], IsNull(Convert(varchar, d.TaxAmount), '') as [MetaValue] 
+			from dbo.Configuration as c1 
+			left join (
+				Select d.ConfigurationId, d.TaxAmount
+					from dbo.ProjectEvaluationCostDetail as d
+						inner join dbo.ProjectEvaluation as e on d.ProjectEvaluationId = e.Id
+						where e.Id = @EvaluationId
+			) as d on c1.Id = d.ConfigurationId
+			where c1.IsDeleted = 0
+	End
+
+	Declare @pr_wardId int, @implementationLevelId int
+	Select Top 1 @pr_wardId = WardId, @implementationLevelId = ImplementationLevelId
+		from dbo.Project
+			where Id = @ProjectId
+
+	Insert into #Data
+		Select '@CurrentUser', IsNull((Select FullName from dbo.[User] where Id = @CurrentUserId), '')
+
+	if not exists (Select Top 1 1 from dbo.ImplementationLevel where Id = @implementationLevelId and Name like N'वडा%')
+	begin
+		Select @pr_wardId = Id from dbo.Ward where IsDeleted = 0 and Code = 0
+	end
+
+	Insert into #Data
+			Select '@SigningEmp1', IsNull((Select SigningEmp1 from dbo.Ward where Id = @pr_wardId), '')
+			Union All
+			Select '@SigningEmp2', IsNull((Select SigningEmp2 from dbo.Ward where Id = @pr_wardId), '')
+			Union All
+			Select '@SigningEmp3', IsNull((Select SigningEmp3 from dbo.Ward where Id = @pr_wardId), '')
+			Union All
+			Select '@SigningDesignation1', IsNull((Select SigningDesignation1 from dbo.Ward where Id = @pr_wardId), '')
+			Union All
+			Select '@SigningDesignation2', IsNull((Select SigningDesignation2 from dbo.Ward where Id = @pr_wardId), '')
+			Union All
+			Select '@SigningDesignation3', IsNull((Select SigningDesignation3 from dbo.Ward where Id = @pr_wardId), '')
+	
+	Select * from #Data
+
+	--Drop Table #Data

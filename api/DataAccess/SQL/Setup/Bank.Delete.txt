@@ -1,0 +1,17 @@
+﻿Declare @Count int
+Set @Count = ( Select Count(BankId) from Committee Where BankId = @Id)
+
+If @Count > 0
+	Begin
+		Select 0
+	End
+Else
+	Begin
+		Update Bank Set
+			IsDeleted = 1,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+
+		Select 1
+	End

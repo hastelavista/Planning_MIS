@@ -1,0 +1,16 @@
+﻿if @Id > 0
+Begin
+	Update Sector Set
+		Name = @Name,
+		Code = @Code,
+		IsUsable = @IsUsable,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into Sector(Name, Code, IsUsable, CreatedDate, CreatedBy)
+				Values(@Name, @Code, @IsUsable, GETDATE(), @CurrentUser)
+End

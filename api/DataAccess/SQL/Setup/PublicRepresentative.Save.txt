@@ -1,0 +1,19 @@
+﻿If @Id > 0
+	Begin
+		Update PublicRepresentative Set
+			Name = @Name,
+			DesignationId = @DesignationId,
+			WardId = @WardId,
+			DisplayOrder = @DisplayOrder,
+			MobileNo = @MobileNo,
+			Address = @Address,
+			IsActive = @IsActive,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @UserId
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into PublicRepresentative(Name, DesignationId, WardId, MobileNo, Address, DisplayOrder, IsActive, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @DesignationId, @WardId, @MobileNo, @Address, @DisplayOrder, @IsActive, GETDATE(), @UserId, 0)
+	End

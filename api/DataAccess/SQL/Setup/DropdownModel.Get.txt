@@ -1,0 +1,7 @@
+﻿Declare @Sql nvarchar(max)
+if(@IsSystemData = 1)
+	Set @Sql = 'Select Id, Name from MIS_SYSTEM.dbo.' + @TableName
+else 
+	Set @Sql = 'Select Id, Name from ' + @TableName + ' where IsDeleted = 0 Order By ' + @OrderBy + ' ' + @SortBy + '' 
+
+exec(@Sql)

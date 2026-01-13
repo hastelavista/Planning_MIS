@@ -1,0 +1,46 @@
+﻿SET XACT_ABORT ON
+Begin Transaction trn_normsSave
+Begin Try
+
+	Delete from dbo.Norms where ActivityId = @ActivityId
+
+	Insert into Norms(ActivityId, ItemId, Qty, CreatedBy)
+	Select
+		@ActivityId,
+		t.c.value('@itemId', 'int') as ItemId,
+		t.c.value('@qty', 'int') as Qty,
+		@UserId
+	from @XmlNormsDetail.nodes('/root/item') as t(c)
+
+	Declare @TotalAmount decimal(18, 2), @RatePerUnit decimal(18, 2)
+
+	Select @TotalAmount = SUM(t.c.value('@qty', 'int') * IR.Rate)
+							from @XmlNormsDetail.nodes('/root/item') as t(c)
+								inner join dbo.ItemRate as IR on IR.ItemId = t.c.value('@itemId', 'int')
+									where IR.FiscalYearId = @FiscalYearId
+
+	Select @RatePerUnit = @TotalAmount / QtyFor from dbo.Activity where Id = @ActivityId
+
+	If @ActivityRateId > 0
+	Begin
+		Update ActivityRate Set
+			FiscalYearId = @FiscalYearId,
+			TotalAmount = @TotalAmount,
+			RatePerUnit = @RatePerUnit,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @UserId
+		Where Id = @ActivityRateId
+	End
+	Else
+	Begin
+		Insert into ActivityRate(ActivityId, FiscalYearId, TotalAmount, RatePerUnit, CreatedBy)
+			Select @ActivityId, @FiscalYearId, @TotalAmount, @RatePerUnit, @UserId
+	End
+
+	COMMIT Transaction
+	Select 'Success' as [Key], Cast(@ActivityId as varchar(10)) as [Value]
+End Try
+Begin Catch
+	Rollback;
+	Select 'Error' as [Key], ERROR_MESSAGE() as [Value]
+End Catch

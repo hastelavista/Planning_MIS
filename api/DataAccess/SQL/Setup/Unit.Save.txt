@@ -1,0 +1,19 @@
+﻿if @Id > 0
+Begin
+	Update Unit Set
+		Name = @Name,
+		Description = @Description,
+		Name_Np = @Name_Np,
+		Symbol = @Symbol,
+		UnitTypeId = @UnitTypeId,
+		IsUsable = @IsUsable,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into Unit(Name, Description, Name_Np, Symbol, UnitTypeId, IsUsable, CreatedDate, CreatedBy)
+				Values(@Name, @Description, @Name_Np, @Symbol, @UnitTypeId, @IsUsable, GETDATE(), @CurrentUser)
+End

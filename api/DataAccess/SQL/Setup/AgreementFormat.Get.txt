@@ -1,0 +1,17 @@
+﻿DECLARE @ImplementationModelId INT = 0
+
+If(@ProjectId>0)
+	BEGIN
+		Select @ImplementationModelId = ImplementationModelId From ProjectModelProject where ProjectId = @ProjectId
+	END
+
+SELECT 
+	af.Id,
+	af.[Name],
+    af.[Body],
+	af.[ImplementationModelId],
+	IsNull(impl.Name, '') as ImplementationModel
+	FROM AgreementFormat AS af
+		LEFT JOIN dbo.ImplementationModel impl ON af.ImplementationModelId = impl.Id AND impl.IsDeleted = 0
+	WHERE(@Id = 0 OR af.Id = @Id) AND (@Name = '' OR af.Name = @Name) AND (@ImplementationModelId = 0 OR af.ImplementationModelId = @ImplementationModelId) AND
+			af.IsDeleted = 0

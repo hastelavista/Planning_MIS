@@ -1,0 +1,16 @@
+﻿If @Id > 0
+	Begin
+		Update UnitType Set
+			Name = @Name,
+			Name_Np = @Name_Np,
+			DisplayOrder = @DisplayOrder,
+			IsUsable = @IsUsable,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into UnitType(Name, Name_Np, DisplayOrder, IsUsable, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Name_Np, @DisplayOrder, @IsUsable, GETDATE(), @CurrentUser, 0)
+	End

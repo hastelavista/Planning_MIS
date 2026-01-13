@@ -1,0 +1,15 @@
+﻿If @Id > 0
+	Begin
+		Update CommitteeType Set
+			Name = @Name,
+			Name_En = @Name_En,
+			Code = @Code,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into CommitteeType(Name, Name_En, Code, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Name_En, @Code, GETDATE(), @CurrentUser, 0)
+	End

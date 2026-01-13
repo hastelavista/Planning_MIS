@@ -1,0 +1,16 @@
+﻿If(@Id = 0)
+Begin
+	Insert Into BudgetSource (BudgetSourceLevelId, Name, CodeNo, CreatedDate, CreatedBy, IsDeleted)
+		Values (@BudgetSourceLevelId, @Name, @CodeNo, GETDATE(), @CurrentUser, 0)
+End
+
+Else
+Begin
+	Update BudgetSource Set 
+		BudgetSourceLevelId = @BudgetSourceLevelId,
+		Name = @Name, 
+		CodeNo = @CodeNo, 
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End

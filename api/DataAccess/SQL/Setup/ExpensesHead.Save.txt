@@ -1,0 +1,17 @@
+﻿
+If @Id > 0
+	Begin
+		Update ExpensesHead Set 
+			Name = @Name, 
+			Code = @Code,
+			ExpensesTypeId = @ExpensesTypeId,
+			ModifiedDate = GETDATE(), 
+			ModifiedBy = @CurrentUser
+		Where Id = @Id;
+	End
+
+Else
+	Begin
+		Insert Into ExpensesHead (ExpensesTypeId, Name, Code, CreatedDate, CreatedBy, IsDeleted)
+		Values (@ExpensesTypeId, @Name, @Code, GETDATE(), @CurrentUser, 0);
+	End

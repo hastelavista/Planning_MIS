@@ -1,0 +1,19 @@
+﻿Select 
+		e.Id,
+		u.Id as UserId,
+		u.FullName,
+		u.UserName,
+		e.Name + ' [' + u.UserName + ']' as Name,
+		e.Id as EmployeeId,
+		e.DepartmentId,
+		d.Name as Department,
+		e.DesignationId,
+		deg.Name as Designation,
+		e.IsTechnicalPerson,
+		e.IsWardSecratery,
+		e.IsAccountant
+	from [User] u
+	left join Employee e on e.Id = u.EmployeeId
+	left join Department d on d.Id = e.DepartmentId
+	left join Designation deg on deg.Id = e.DesignationId
+	Where u.EmployeeId > 0

@@ -1,0 +1,21 @@
+﻿If @Id > 0
+Begin
+	Update Employee Set
+		Name = @Name,
+		Address = @Address,
+		MobileNo = @MobileNo,
+		DepartmentId = @DepartmentId,
+		DesignationId = @DesignationId,
+		IsTechnicalPerson = @IsTechnicalPerson,
+		IsWardSecratery = @IsWardSecratery,
+		IsAccountant = @IsAccountant,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into Employee(Name, Address, MobileNo, DepartmentId, DesignationId, IsTechnicalPerson, IsWardSecratery, IsAccountant, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsDeleted)
+		Values(@Name, @Address, @MobileNo, @DepartmentId, @DesignationId, @IsTechnicalPerson, @IsWardSecratery, @IsAccountant, GETDATE(), @CurrentUser, Null, Null, 0)
+End

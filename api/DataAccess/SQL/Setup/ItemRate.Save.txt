@@ -1,0 +1,17 @@
+﻿MERGE INTO ItemRate as T
+	USING (
+		SELECT 
+			t.c.value('@id', 'int') as Id,
+			t.c.value('@itemId', 'int') as ItemId,
+			t.c.value('@fiscalYearId', 'int') as FiscalYearId,
+			t.c.value('@rate', 'decimal(18,2)') as Rate
+		from @xml.nodes('/root/itemrate') as t(c)
+		) as S On T.Id = S.Id	
+	WHEN MATCHED THEN 
+		Update SET 
+		T.Rate = S.Rate, 
+		T.ModifiedBy = @CurrentUser, 
+		T.ModifiedDate = GETDATE()
+	WHEN NOT MATCHED BY TARGET THEN   
+		Insert (ItemId, FiscalYearId, Rate, CreatedBy)
+			Values (S.ItemId, S.FiscalYearId, S.Rate, @CurrentUser);

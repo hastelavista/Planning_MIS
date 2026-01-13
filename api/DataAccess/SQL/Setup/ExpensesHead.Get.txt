@@ -1,0 +1,9 @@
+﻿Select 
+		EH.*,
+		ET.Name as ExpensesType
+	from ExpensesHead EH
+		inner join ExpensesType ET on ET.Id = EH.ExpensesTypeId
+	where (@Id = 0 or EH.Id = @Id) and
+	(@Name = '' or EH.Name Like '%'+RTRIM(LTRIM(@Name))+'%') and 
+	EH.IsDeleted = 0
+	Order By Code Asc

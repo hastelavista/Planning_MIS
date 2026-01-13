@@ -1,0 +1,31 @@
+﻿Select 
+		BS.*,
+		BSL.Name as BudgetSourceLevelName,
+		Convert(decimal(18, 2), 0.00) as Budget
+	into #Data
+	from BudgetSource BS
+		left join BudgetSourceLevel BSL on BSL.Id = BS.BudgetSourceLevelId
+		where (@Id = 0 or BS.Id = @Id) and
+		(@Name = '' or BS.Name Like '%'+RTRIM(LTRIM(@Name))+'%') and
+		(@CodeNo = '' or BS.CodeNo = @CodeNo) and
+		BS.IsDeleted = 0
+
+If @WithBudget = 1
+Begin
+	Update #Data Set Budget = IsNull(b.Amount, 0) - IsNull(bs.Amount, 0)
+		from #Data
+			left join dbo.BudgetAllocation as b on #Data.Id = b.BudgetSourceId and b.FiscalYearId = @FiscalYearId and b.IsDeleted = 0
+			left join
+			(
+				Select BudgetSourceId, Sum(Amount) as Amount
+					from dbo.ProjectBudgetSource as pbs
+						inner join dbo.Project as p on pbs.ProjectId = p.Id
+						where pbs.IsDeleted = 0 
+							and pbs.FiscalYearId = @FiscalYearId
+							and p.IsDeleted = 0
+						group by BudgetSourceId
+			) as bs on #Data.Id = bs.BudgetSourceId
+End
+
+Select * from #Data
+

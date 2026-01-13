@@ -1,0 +1,12 @@
+﻿Select 
+		PG1.*, 
+		PG2.Name as ParentName,
+		S.Name as SectorName
+	from ProjectGroup PG1
+		left join ProjectGroup PG2 on PG1.ParentId = PG2.Id
+		Left join Sector S on S.Id = PG1.SectorId
+			Where (@Id=0 or PG1.Id=@Id)
+			and (@Name='' or PG1.Name Like '%'+RTRIM(LTRIM(@Name))+'%')
+			and (@SectorId = 0 or PG1.SectorId = @SectorId)
+			and PG1.IsDeleted = 0
+			Order By ParentName

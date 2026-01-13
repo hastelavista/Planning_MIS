@@ -1,0 +1,6 @@
+﻿Select * from ImplementationLevel 
+	Where	(@Id = 0 or Id = @Id) And
+			(@Name = '' or Name = @Name) And
+			(@Code = '' or Code = @Code) And
+			(@Threshold = 0 or Threshold = @Threshold) And
+			IsDeleted = 0

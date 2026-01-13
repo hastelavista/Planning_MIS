@@ -1,0 +1,10 @@
+﻿Select 
+	U.*,
+	UT.Name as UnitTypeName
+from Unit U
+	left join UnitType UT on UT.Id = U.UnitTypeId
+		Where	(@Id = 0 or U.Id = @Id) And
+				(@Name = '' or U.Name like '%' + @Name + '%') And
+				(@Description = '' or U.Description like '%' + @Description + '%') And
+				U.IsDeleted = 0 And
+				UT.IsUsable = 1

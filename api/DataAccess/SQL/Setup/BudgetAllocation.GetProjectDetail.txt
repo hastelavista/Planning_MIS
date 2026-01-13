@@ -1,0 +1,4 @@
+﻿Select p.Id as ProjectId, p.Name as ProjectName, pbs.Amount
+	from dbo.ProjectBudgetSource as pbs
+		inner join dbo.Project as p on pbs.ProjectId = p.Id and p.IsDeleted = 0
+		where pbs.BudgetAllocationId = @AllocationId and pbs.IsDeleted = 0

@@ -1,0 +1,17 @@
+﻿Select
+		I.Id,
+		I.Name,
+		I.ItemTypeId,
+		IT.Name as ItemType,
+		I.Code,
+		I.UnitId,
+		U.Name as Unit,
+		I.Remarks,
+		IR.Rate
+	from Item I
+		inner join ItemType IT on IT.Id = I.ItemTypeId
+		inner join Unit U on U.Id = I.UnitId
+		left join ItemRate IR on IR.ItemId = I.Id and IR.FiscalYearId = @FiscalYearId
+			where	(@Id = 0 or I.Id = @Id) And
+					(@ItemTypeId = 0 or I.ItemTypeId = @ItemTypeId) And
+					(@Name = '' or I.Name like '%' + @Name + '%') AND I.IsDeleted = 0

@@ -1,0 +1,32 @@
+﻿/* Reduce global font size */
+html, body, .swagger-ui {
+    font-size: 10px !important;
+}
+
+    /* Make endpoint boxes smaller */
+    .swagger-ui .opblock {
+        margin: 4px 0.1px !important;
+        padding: 1px !important;
+    }
+
+    /* Make method (GET/POST/etc.) button smaller */
+    .swagger-ui .opblock-summary {
+        padding: 4px 10px !important;
+    }
+
+    .swagger-ui .opblock-summary-method {
+        font-size: 8.5px !important;
+        width: 60px !important;
+    }
+
+    /* Reduce font in parameter tables */
+    .swagger-ui table,
+    .swagger-ui table tbody tr td,
+    .swagger-ui table thead tr th {
+        font-size: 10px !important;
+    }
+
+    /* Reduce models section font */
+    .swagger-ui .model-box {
+        font-size: 10px !important;
+    }

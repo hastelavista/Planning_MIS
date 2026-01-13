@@ -1,0 +1,9 @@
+﻿Select 
+		BS.* 
+	From BudgetSubTitle BS
+		inner join ExpensesType ET on ET.Id = BS.ExpensesTypeId
+		Where	(@Id = 0 or BS.Id = @Id) And
+				(@Name = '' or BS.Name like '%' + @Name + '%') And
+				(@Code = '' or BS.Code like '%' + @Code + '%') And
+				(@ExpensesTypeId = 0 or BS.ExpensesTypeId = @ExpensesTypeId) And
+				BS.IsDeleted = 0

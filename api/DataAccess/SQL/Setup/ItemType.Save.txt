@@ -1,0 +1,16 @@
+﻿If @Id > 0
+Begin
+	Update ItemType Set 
+		Name = @Name,
+		ParentId = @ParentId,
+		Code = @Code,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+	Begin
+		Insert into ItemType(Name, ParentId, Code, CreatedBy)
+		Values(@Name, @ParentId, @Code, @CurrentUser)
+	End

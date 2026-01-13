@@ -1,0 +1,14 @@
+﻿Select 
+		SS.Id,
+		SS.SectorId,
+		S.Name as Sector,
+		SS.Name,
+		SS.Code,
+		SS.IsUsable
+	from SubSector SS
+		inner join Sector S on S.Id = SS.SectorId
+			Where	(@Id = 0 or SS.Id = @Id) And
+					(@SectorId = 0 or SS.SectorId = @SectorId) And
+					(@Name = '' or SS.Name like '%' + @Name + '%') And
+					(@Code = '' or SS.Code = @Code) And 
+					SS.IsDeleted = 0

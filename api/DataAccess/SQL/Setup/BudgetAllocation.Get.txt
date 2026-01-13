@@ -1,0 +1,39 @@
+﻿
+Select bdg.Id,
+		bdg.FiscalYearId,
+		fs.Name as FiscalYear,
+		IsNull(bdg.WardId, 0) as WardId,
+		bdg.ParentId,
+		bdg2.Name AS ParentName,
+		IsNull(w.Name, '') as WardName,
+		bdg.Name,
+		bdg.Amount,
+		IsNull(b.Amount, 0) as AssignedBudget,
+		bdg.Amount - IsNull(b.Amount, 0) as Balance
+	from dbo.BudgetAllocation as bdg
+		inner join dbo.FiscalYear as fs on bdg.FiscalYearId = fs.Id
+		inner join dbo.[User] as u on u.Id = @CurrentUserId
+		left join dbo.Ward as w on bdg.WardId = w.Id
+		left join
+		(
+			Select BudgetAllocationId, Sum(pbs.Amount) as Amount
+				from dbo.ProjectBudgetSource as pbs
+					inner join dbo.Project as p on pbs.ProjectId = p.Id and p.IsDeleted = 0
+				where pbs.IsDeleted = 0
+					group by BudgetAllocationId
+			UNION
+			Select ba.ParentId as BudgetAllocationId, Sum(pbs.Amount) as Amount
+				from dbo.ProjectBudgetSource as pbs
+					inner join dbo.BudgetAllocation as ba on ba.Id = pbs.BudgetAllocationId and ba.ParentId > 0
+					inner join dbo.Project as p on pbs.ProjectId = p.Id and p.IsDeleted = 0
+				where pbs.IsDeleted = 0
+					group by ParentId
+		) as b on bdg.Id = b.BudgetAllocationId
+		LEFT JOIN dbo.BudgetAllocation as bdg2 ON bdg.ParentId = bdg2.Id AND bdg2.IsDeleted = 0
+	where (@Id = 0 or bdg.Id = @Id)
+		and bdg.IsDeleted = 0
+		and (@FiscalYearId = 0 or fs.Id = @FiscalYearId)
+		and (@Name = '' or bdg.Name like @Name + '%')
+		and (@WardId = 0 or bdg.WardId = @WardId)
+		and (@CurrentUserId = 0 or u.WardId is null or (u.WardId is not null and bdg.wardId in (Select Value from OpenJson(u.WardId))))
+		and (@parentRelation = 0 OR bdg.ParentId IS NOT NULL)

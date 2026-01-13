@@ -1,0 +1,19 @@
+﻿if @Id > 0
+Begin
+	Update Configuration Set
+		Name = @Name,
+		Code = @Code,
+		Value = @Value,
+		Type = @Type,
+		IsForEstimation = @IsForEstimation,
+		IsForEvaluation = @IsForEvaluation,
+		ModifiedDate = GETDATE(),
+		ModifiedBy = @CurrentUser
+	Where Id = @Id
+End
+
+Else
+Begin
+	Insert into Configuration(Name, Code, Value, Type, IsForEstimation, IsForEvaluation, CreatedDate, CreatedBy, IsDeleted)
+		Values(@Name, @Code, @Value, @Type, @IsForEstimation, @IsForEvaluation, GETDATE(), @CurrentUser, 0)
+End

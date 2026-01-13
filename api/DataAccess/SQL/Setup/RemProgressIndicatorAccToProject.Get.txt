@@ -1,0 +1,42 @@
+﻿SELECT
+	[pi].Id AS ProgressIndicatorId,
+	[pi].[Name] AS ProgressIndicatorName,
+	[pi].Code AS ProgressIndicatorCode,
+	u.[Name] AS Unit,
+	SUM(ppg.CurrentFYTotalFinancialGoal) AS tfg,
+	SUM(ppg.CurrentFYTotalPhysicalGoal) AS tpg
+INTO #tempProgressGoal
+	FROM ProjectProgressGoal AS ppg
+		INNER JOIN ProgressIndicator AS [pi] ON ppg.progressIndicatorId = [pi].Id AND [pi].IsDeleted = 0
+		LEFT JOIN Unit AS u ON u.Id = [pi].UnitId AND u.IsDeleted = 0
+			WHERE ppg.ProjectId = @projectId AND ppg.IsDeleted = 0
+		GROUP BY [pi].Id, [pi].[Name], [pi].Code,u.[Name]
+				
+SELECT 
+	pcg.ProgressIndicatorId,
+	SUM(pcg.FinancialGoalCompleted) AS cfg,
+	SUM(pcg.PhysicalGoalCompleted) AS cpg
+INTO #tempCompletedGoal
+	FROM ProjectCompletedGoal as pcg
+		WHERE (@projectCompletedGoalId = 0 OR [pcg].Id != @projectCompletedGoalId)
+			AND pcg.ProjectId = @projectId AND pcg.IsDeleted = 0
+	GROUP BY pcg.ProgressIndicatorId
+
+
+SELECT (tpg.tfg - ISNULL(tcg.cfg, 0)) AS Rfg,
+	(tpg.tpg - ISNULL(tcg.cpg, 0)) AS Rpg,
+	tpg.ProgressIndicatorId
+INTO #tempRemainingGoal
+	FROM #tempProgressGoal AS tpg
+		LEFT JOIN #tempCompletedGoal AS tcg ON tpg.ProgressIndicatorId = tcg.ProgressIndicatorId
+	GROUP BY tpg.ProgressIndicatorId ,tpg.tfg, tcg.cfg, tpg.tpg, tcg.cpg
+
+SELECT  
+	tpg.ProgressIndicatorId AS Id,
+	tpg.ProgressIndicatorName AS [Name],
+	tpg.Unit,
+	trg.Rfg AS MaxFinancialGoal,
+	trg.Rpg AS MaxPhysicalGoal 
+	FROM #tempProgressGoal AS tpg
+		INNER JOIN #tempRemainingGoal AS trg ON tpg.ProgressIndicatorId = trg.ProgressIndicatorId
+	GROUP BY tpg.ProgressIndicatorId, tpg.ProgressIndicatorName, tpg.Unit, trg.Rfg, trg.Rpg

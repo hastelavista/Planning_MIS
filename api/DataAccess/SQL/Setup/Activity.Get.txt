@@ -1,0 +1,32 @@
+﻿Select 
+		A.Id,
+		A.ActivityGroupId,
+		AG.Code as ActivityGroupCode,
+		AG.Name as ActivityGroup,
+		A.Name,
+		A.Code,
+		A.ReferenceCode, 
+		A.UnitId,
+		U.Name as Unit,
+		A.QtyFor,
+		A.IsUsable,
+		A.CreatedDate,
+		A.CreatedBy,
+		A.ModifiedDate,
+		A.ModifiedBy,
+		NT.Name as NormsType,
+		IsNull(AR.TotalAmount, 0) as TotalAmount,
+		IsNull(AR.RatePerUnit, 0) as Rate,
+		A.IsDeleted
+	from Activity A
+		inner join ActivityGroup AG on AG.Id = A.ActivityGroupId
+		left join ActivityRate AR on AR.ActivityId = A.Id and AR.FiscalYearId = @FiscalYearId
+		left join NormsType NT on NT.Id = AG.NormsTypeId
+		left join Unit U on U.Id = A.UnitId
+			where	(@Id = 0 or A.Id = @Id) And
+					(@ActivityGroupId = 0 or A.ActivityGroupId = @ActivityGroupId) And
+					(@Name = '' or A.Name like '%' + @Name + '%') And
+					(@Code = '' or A.Code = @Code) And
+					(@ReferenceCode = '' or A.ReferenceCode = @ReferenceCode) And
+					A.IsDeleted = 0
+						Order by AG.Code

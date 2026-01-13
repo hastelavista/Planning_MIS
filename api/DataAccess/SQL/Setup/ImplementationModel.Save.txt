@@ -1,0 +1,15 @@
+﻿If @Id > 0
+	Begin
+		Update ImplementationModel Set
+			ProjectModelId = @ProjectModelId,
+			Name = @Name,
+			Code = @Code,
+			ModifiedDate = GETDATE(),
+			ModifiedBy = @CurrentUser
+		Where Id = @Id
+	End
+Else
+	Begin
+		Insert into ImplementationModel(ProjectModelId, Name, Code, CreatedDate, CreatedBy, IsDeleted)
+		Values(@ProjectModelId, @Name, @Code, GETDATE(), @CurrentUser, 0)
+	End

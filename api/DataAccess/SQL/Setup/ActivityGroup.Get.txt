@@ -1,0 +1,13 @@
+﻿Select 
+		AG1.*,
+		AG2.Id as ParentId,
+		AG2.Name as Parent,
+		AG1.NormsTypeId,
+		NT.Name as NormsType
+	from ActivityGroup AG1
+		left join ActivityGroup AG2 on AG2.Id = AG1.ParentId
+		left join NormsType NT on NT.Id = AG1.NormsTypeId
+			Where	(@Id = 0 or AG1.Id = @Id) and
+					(@Name = '' or AG1.Name like '%' + @Name + '%') and
+					AG1.IsDeleted = 0
+						Order by Code

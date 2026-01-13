@@ -1,0 +1,15 @@
+﻿If @Id > 0
+	Begin
+		Update Designation Set 
+			Name = @Name, 
+			DisplayOrder = @DisplayOrder, 
+			Type = @Type, 
+			ModifiedDate = GETDATE(), 
+			ModifiedBy = @UserId
+		Where Id = @Id;
+	End
+Else
+	Begin
+		Insert Into Designation (Name, DisplayOrder, Type, CreatedDate, CreatedBy, IsDeleted)
+			Values (@Name, @DisplayOrder, @Type, GETDATE(), @UserId, 0);
+	End

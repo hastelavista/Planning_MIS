@@ -1,0 +1,15 @@
+﻿Select 'Public Representative' as Type, N'जनप्रतिनिधि पद' as TypeNp
+Union All
+Select 'Committee', N'उपभोक्ता समिति पद'
+Union All
+Select 'Monitoring Committee', N'अनुगमन समिति पद'
+Union All
+Select 'Employee', N'कर्मचारी पद'
+
+Select * from Designation 
+	where	(@Id = 0 or Id = @Id) and
+			(@Name = '' or Name Like '%'+LTRIM(RTRIM(@Name))+'%') and
+			(@Type = 0 or Type = @Type) and
+			IsActive = 1 and
+			IsDeleted = 0
+			Order By Type, DisplayOrder

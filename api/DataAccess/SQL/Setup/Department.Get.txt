@@ -1,0 +1,15 @@
+﻿Declare @currentUserDepartmentId int = 0
+If (@GetUserDeparmentOnly = 1 And Exists (Select Top 1 1 from dbo.[User] where Id = @UserId and IsDepartmentUser = 1))
+Begin
+	Select @currentUserDepartmentId = DepartmentId from dbo.Employee
+		where Id = (Select EmployeeId from dbo.[User] where Id = @UserId)
+
+	Set @currentUserDepartmentId = IsNull(@currentUserDepartmentId, 0)
+End
+
+Select * from Department
+	Where	(@Id = 0 or Id = @Id) and
+			(@Name = '' or Name like '%' + @Name + '%') and 
+			(@Alias = '' or Alias = @Alias) and
+			(@currentUserDepartmentId = 0 or Id = @currentUserDepartmentId) and
+			IsDeleted = 0
